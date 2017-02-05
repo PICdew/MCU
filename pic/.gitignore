@@ -1,0 +1,7 @@
+*.hex
+*.cpr
+*.fcs
+*.lst
+*.occ
+*.var
+*.asm
