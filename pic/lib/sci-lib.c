@@ -32,6 +32,21 @@ void writeUNS8(uns8 v){
 	i = v & 0x0f;
 	putch(hex2char[i]);		//low 4-bit
 }
+
+void writeUNS8Bit(uns8 v){
+	uns8 i,j;
+	j=0b.1000.000;
+	while(j!=0){
+
+		if(v & j){
+			putch(hex2char[1]);
+		}else{
+			putch(hex2char[0]);
+		}
+		j=j>>1;
+	}
+}
+
 #define CR()	putch(0x0D);
 #define LF()	putch(0x0A);
 void crlf(void){
