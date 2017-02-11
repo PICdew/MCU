@@ -10,6 +10,9 @@ The Home of Electronic Engineering and Embedded Systems Programming
 # Arduino
 * [LedControl - max7219/max7221][5]
 
+# report
+* [Serial Peripheral Interface (SPI) ][6]
+
 
 
 [1]:http://shahrulnizam.com/category/lesson-pic/
@@ -17,3 +20,4 @@ The Home of Electronic Engineering and Embedded Systems Programming
 [3]:http://ee.cleversoul.com/max7219-source.html
 [4]:http://ee.cleversoul.com/max7219.html
 [5]:http://playground.arduino.cc/Main/LedControl
+[6]:http://www.ohio.edu/people/uijtdeha/ee3954_fall13_16_spi.pdf
