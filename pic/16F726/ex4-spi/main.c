@@ -93,6 +93,12 @@ void main( void)
 #else
 	setCommand(max7219_reg_digit0,var2led[0]);
 #endif	
+	while(1){
+		for(i=0; i<9; i++){
+			delay1s();
+			setCommand(max7219_reg_digit0,i);
+		}
+	}
 
 	while(1){
 		for(i=0; i<255; i++){		
