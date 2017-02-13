@@ -35,9 +35,8 @@ void writeUNS8(uns8 v){
 
 void writeUNS8Bit(uns8 v){
 	uns8 i,j;
-	j=0b.1000.000;
+	j=0b.1000.0000;
 	while(j!=0){
-
 		if(v & j){
 			putch(hex2char[1]);
 		}else{
