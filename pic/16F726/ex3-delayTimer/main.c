@@ -14,7 +14,7 @@ const char text[NText] = "Hello world!";
 const uns8 led[NLed]={0b.0000.1110,0b.0000.1101,0b.0000.1011,0b.0000.0111};
 
 
-//OPTION  = 0x81 ;  1:4 prescaler ,10M/4/2=1.25M = 0.8u
+//OPTION  = 0x81 ;  1:4 prescaler ,20M/4/4=1.25M = 0.8u
 #define	DELAY_100U		(unsigned char)(256 -(100.0/0.8) +2)
 #define delay_us(C)\
 	TMR0 = C;\
