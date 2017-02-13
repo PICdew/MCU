@@ -15,6 +15,10 @@ uns8 getch() {
 		continue;
 	return RCREG;	
 }
+
+/*-----------------------------------------------------------------
+- Write Const String
+-------------------------------------------------------------------*/
 void writeCString(const uns8 *s)
 {
 	char u;
