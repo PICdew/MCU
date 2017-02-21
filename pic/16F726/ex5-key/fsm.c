@@ -27,12 +27,12 @@ void app_entry(){
 		writeUNS8Bit(keyValue);
 		crlf();
 
-		if( keyValue == K_START ) LED2Value=2;
-		if( keyValue == K_SET ) LED2Value=3;
-		if( keyValue == K_UP ) LED2Value=4;
-		if( keyValue == K_DOWN ) LED2Value=5;
-		if( keyValue == K_LEFT ) LED2Value=6;
-		if( keyValue == K_RIGHT ) LED2Value=7;
+		if( keyValue == K_START ) LED2Value=0;
+		if( keyValue == K_SET ) LED2Value=1;
+		if( keyValue == K_UP ) LED2Value=2;
+		if( keyValue == K_DOWN ) LED2Value=3;
+		if( keyValue == K_LEFT ) LED2Value=4;
+		if( keyValue == K_RIGHT ) LED2Value=5;
 
 		setCommand(max7219_reg_digit1,LED2Value);
 	}
@@ -42,7 +42,7 @@ void app_entry(){
 		setCommand(max7219_reg_digit0,LEDCnt);
 
 		LEDCnt++;
-		
+
 		if(LEDCnt>9) LEDCnt=0;
 
 		startTimer2(Delay_1000MS);
@@ -70,6 +70,6 @@ void fsm2( void)
 			break;
 
 		case APP_STOP:
-			break;						
-	}	
+			break;
+	}
 }

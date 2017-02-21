@@ -1,13 +1,13 @@
 #include "16f726.h"
 #include "c_16f726.h"
 
-#pragma config = ( HS_ & WDTDIS_ & PWRTEN_ & MCLRDIS_ & UNPROTECT_ & BOREN_ & BORV25_ & PLLDIS_ & DEBUGDIS_ )
+#pragma config = ( HS_ & WDTDIS_ & PWRTEN_ & MCLREN_ & UNPROTECT_ & BOREN_ & BORV25_ & PLLDIS_ & DEBUGDIS_ )
 
 #pragma bit TRISC6   @ 0x87.6
 #pragma bit TRISC7   @ 0x87.7
 #pragma bit MAX7219_LOAD_PIN	@ PORTC.2
 
-#pragma char KEY_PORT   @ PORTB
+#pragma char KEY_PORT   @ PORTA
 
 #pragma wideConstData p	
 
@@ -28,14 +28,14 @@ uns8 keyValue;
 uns8 LEDCnt;
 uns8 LED2Value;
 
-enum { K_START = 0b.0000.0100, 
-	   K_SET   = 0b.0000.1000, 
-	   K_UP    = 0b.0001.0000, 
-	   K_DOWN  = 0b.0010.0000,
-	   K_LEFT  = 0b.0100.0000,
-	   K_RIGHT = 0b.1000.0000 
-	};
 
+enum { K_START = 0b.0000.0001, 
+	   K_SET   = 0b.0000.0010, 
+	   K_UP    = 0b.0000.0100, 
+	   K_DOWN  = 0b.0000.1000,
+	   K_LEFT  = 0b.0001.0000,
+	   K_RIGHT = 0b.0010.0000 
+	};
 
 #include "sci-lib.c"
 #include "max7219.c"
@@ -88,22 +88,24 @@ void init_spi(void){
 	TRISC 	= 0b.0000.0000; /* output */
 }
 
+
+
 /*
 intput key
 
-                               Up(RB4)
-set(RB3)           Left(RB6)             Right(RB7)
-	                           Down(RB5)
-start(RB2)
+                               Up(RA2)
+set(RA1)           Left(RA4)             Right(RA5)
+	                           Down(RA3)
+start(RA0)
 
-RB1  IR sensing
-RB0  IR sensing
+RB4  IR sensing
+RB5  IR sensing
 */
 
 void init_inputkey(void){
-	PORTB 	= 0b.0000.0000;
-	ANSELB	= 0b.0000.0000; /* digital */
-	TRISB 	= 0b.1111.1111; /* intput */	
+	PORTA 	= 0b.0000.0000;
+	ANSELA	= 0b.0000.0000; /* digital */
+	TRISA 	= 0b.1111.1111; /* intput */	
 
 	state1  = OPEN;
 }
