@@ -71,7 +71,6 @@ void init_comms(void){
 	rxdata.b.stx = 0;
 	rxdata.b.etx = 0;
 	rxdata.b.dle = 0;
-	rxdata.b.task = 0;
 	rxdata.b.cmdfull = 0;
 	cmddata.tail = 0;
 	cmddata.head = 0;
@@ -90,6 +89,7 @@ void init_gpio(void){
 }
 
 void process_cmd(void);
+void process_num(uns8 chipnumber,uns8 b0,uns8 b1,uns8 b2,uns8 b3);
 
 void main( void)
 {
@@ -163,164 +163,78 @@ void main( void)
 }
 
 /*
-#define CLEAR0_ALL		0x40
-#define CLEAR0_N80		0x41
-#define CLEAR0_N81		0x42
-#define CLEAR0_N0    	0x43
-#define CLEAR0_N1    	0x44
-#define CLEAR0_N2    	0x45
-#define CLEAR0_N3    	0x46
+#define CHIP1NUB    	0x60
+#define CHIP2NUB    	0x61
+#define CHIP1REG    	0x62
+#define CHIP2REG    	0x63
 
-#define CLEAR_ALL		0x50
-#define CLEAR_N80		0x51
-#define CLEAR_N81		0x52
-#define CLEAR_N0    	0x53
-#define CLEAR_N1    	0x54
-#define CLEAR_N2    	0x55
-#define CLEAR_N3    	0x56
-
-#define SET_N0      	0x60
-#define SET_N1      	0x61
-#define SET_N2      	0x62
-#define SET_N3      	0x63
-
-#define SET_N80_0       0x70
-#define SET_N80_1       0x71
-#define SET_N80_2       0x72
-#define SET_N80_3      	0x73
-#define SET_N80_4     	0x74
-#define SET_N80_5     	0x75
-#define SET_N80_6     	0x76
-#define SET_N80_7     	0x77
-
-#define SET_N81_0     	0x78
-#define SET_N81_1     	0x79
-#define SET_N81_2     	0x7a
-#define SET_N81_3     	0x7b
+#define NUM_DP			0xA
+#define NUM_CLEAR       0xB
+#define NUM_NULL        0xF
 */
-
-//MAX7219_CLEAR_LED
 
 void process_cmd(void){
 
-	uns8 ret,cmd,value2,value1,value0;
+	uns8 ret,cmd,b3,b2,b1,b0;
 
-	ret=getCmd(cmd,value2,value1,value0);
+	ret=getCmd(cmd,b0,b1,b2,b3);
 	if(ret == 1){
-		if(cmd == CLEAR0_ALL){
-			ledclear1_all0();
-			ledclear2_all0();
+		if(cmd == CHIP1NUB){
+			process_num(1,b0,b1,b2,b3);
 
-		}else if(cmd == CLEAR_ALL){
-			ledclear1();
-			ledclear2();
+		}else if(cmd == CHIP2NUB){
+			process_num(2,b0,b1,b2,b3);
 
-		}else if(cmd == CLEAR0_N80){
-			ledclear1_all0();
+		}else if(cmd == CHIP1REG){
+			//ledchip(1,b0,b1);
 
-		}else if(cmd == CLEAR_N80){
-			ledclear1();			
-
-		}else if(cmd == CLEAR0_N81){
-			ledclear2_all0();
-
-		}else if(cmd == CLEAR_N81){
-			ledclear2();	
-
-		}else if(cmd == SET_N80_0){
-		    ledchip1(max7219_reg_digit0,value0);
-
-		}else if(cmd == SET_N80_1){
-		    ledchip1(max7219_reg_digit1,value0);		    
-
-		}else if(cmd == SET_N80_2){
-		    ledchip1(max7219_reg_digit2,value0);		    
-
-		}else if(cmd == SET_N80_3){
-		    ledchip1(max7219_reg_digit3,value0);		    
-
-		}else if(cmd == SET_N80_4){
-		    ledchip1(max7219_reg_digit4,value0);		    
-
-		}else if(cmd == SET_N80_5){
-		    ledchip1(max7219_reg_digit5,value0);		    
-
-		}else if(cmd == SET_N80_6){
-		    ledchip1(max7219_reg_digit6,value0);		    
-
-		}else if(cmd == SET_N80_7){
-		    ledchip1(max7219_reg_digit7,value0);		    
-
-		}else if(cmd == SET_N81_0){
-		    ledchip2(max7219_reg_digit0,value0);		    
-
-		}else if(cmd == SET_N81_1){
-		    ledchip2(max7219_reg_digit1,value0);
-
-		}else if(cmd == SET_N81_2){
-		    ledchip2(max7219_reg_digit2,value0);
-
-		}else if(cmd == SET_N81_3){
-		    ledchip2(max7219_reg_digit3,value0);
-		    		    		    
-		}else if(cmd == SET_N0){
-    		ledchip1(max7219_reg_digit0,value0);
-    		ledchip1(max7219_reg_digit1,value1);
-    		ledchip1(max7219_reg_digit2,value2);
-
-		}else if(cmd == CLEAR0_N0){
-    		ledchip1(max7219_reg_digit0,0);
-    		ledchip1(max7219_reg_digit1,0);
-    		ledchip1(max7219_reg_digit2,0);
-
-		}else if(cmd == CLEAR_N0){
-    		ledchip1(max7219_reg_digit0,MAX7219_CLEAR_LED);
-    		ledchip1(max7219_reg_digit1,MAX7219_CLEAR_LED);
-    		ledchip1(max7219_reg_digit2,MAX7219_CLEAR_LED);    		
-
-		}else if(cmd == SET_N1){
-    		ledchip1(max7219_reg_digit3,value0);
-    		ledchip1(max7219_reg_digit4,value1);
-
-		}else if(cmd == CLEAR0_N1){
-    		ledchip1(max7219_reg_digit3,0);
-    		ledchip1(max7219_reg_digit4,0);
-
-		}else if(cmd == CLEAR_N1){
-    		ledchip1(max7219_reg_digit3,MAX7219_CLEAR_LED);
-    		ledchip1(max7219_reg_digit4,MAX7219_CLEAR_LED);
-
-		}else if(cmd == SET_N2){
-    		ledchip1(max7219_reg_digit5,value0);
-    		ledchip1(max7219_reg_digit6,value1);
-    		ledchip1(max7219_reg_digit7,value2);
-
-		}else if(cmd == CLEAR0_N2){    		
-    		ledchip1(max7219_reg_digit5,0);
-    		ledchip1(max7219_reg_digit6,0);
-    		ledchip1(max7219_reg_digit7,0);
-
-		}else if(cmd == CLEAR_N2){    		
-    		ledchip1(max7219_reg_digit5,MAX7219_CLEAR_LED);
-    		ledchip1(max7219_reg_digit6,MAX7219_CLEAR_LED);
-    		ledchip1(max7219_reg_digit7,MAX7219_CLEAR_LED);
-
-		}else if(cmd == SET_N3){
-    		ledchip2(max7219_reg_digit0,value0);
-    		ledchip2(max7219_reg_digit1,value1);
-    		ledchip2(max7219_reg_digit2,value2);
-
-		}else if(cmd == CLEAR0_N3){    		
-    		ledchip2(max7219_reg_digit0,0);
-    		ledchip2(max7219_reg_digit1,0);
-    		ledchip2(max7219_reg_digit2,0);
-    		ledchip2(max7219_reg_digit3,0);    		
-
-		}else if(cmd == CLEAR_N3){    		
-    		ledchip2(max7219_reg_digit0,MAX7219_CLEAR_LED);
-    		ledchip2(max7219_reg_digit1,MAX7219_CLEAR_LED);
-    		ledchip2(max7219_reg_digit2,MAX7219_CLEAR_LED);
-    		ledchip2(max7219_reg_digit3,MAX7219_CLEAR_LED);    		
+		}else if(cmd == CHIP2REG){
+			//ledchip(2,b0,b1);
 		}
+	}
+}
+
+void send_chip_num(uns8 chipnumber,uns8 num,uns8 value){
+	uns8 data=NUM_NULL;
+
+	if( (value >=0) && (value < 0xa)){
+		data = value;
+
+	}else if(value == NUM_DP){
+		data = 0x80;
+
+	}else if(value == NUM_CLEAR){
+		data = MAX7219_CLEAR_LED;
+
+	}else{
+		return;
+	}
+
+	if( chipnumber <3){
+		ledchip(chipnumber,num,data);
+	}
+}
+
+void process_num(uns8 chipnumber,uns8 b0,uns8 b1,uns8 b2,uns8 b3){
+	uns8 n0,n1,n2,n3;
+
+	n0 = b0 & 0xf;
+	n1 = (b0 & 0xf0) >> 4;
+	n2 = b1 & 0xf;
+	n3 = (b1 & 0xf0) >> 4;
+	send_chip_num(chipnumber,max7219_reg_digit0,n0);
+	send_chip_num(chipnumber,max7219_reg_digit1,n1);
+	send_chip_num(chipnumber,max7219_reg_digit2,n2);
+	send_chip_num(chipnumber,max7219_reg_digit3,n3);
+
+	if( chipnumber == 1 ){
+		n0 = b2 & 0xf;
+		n1 = (b2 & 0xf0) >> 4;
+		n2 = b3 & 0xf;
+		n3 = (b3 & 0xf0) >> 4;
+		send_chip_num(chipnumber,max7219_reg_digit4,n0);
+		send_chip_num(chipnumber,max7219_reg_digit5,n1);
+		send_chip_num(chipnumber,max7219_reg_digit6,n2);
+		send_chip_num(chipnumber,max7219_reg_digit7,n3);
 	}
 }

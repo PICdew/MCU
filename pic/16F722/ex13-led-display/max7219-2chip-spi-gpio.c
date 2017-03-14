@@ -104,6 +104,14 @@ void ledchip2(uns8 cmd,uns8 value){
 	LEDLOAD2 = 0;
 }
 
+void ledchip(uns8 chipnumber, uns8 cmd, uns8 value){
+	if(chipnumber == 1){
+		ledchip1(cmd,value);
+	}else if(chipnumber == 2){
+		ledchip2(cmd,value);
+	}
+}
+
 #define ledcmd(cmd,value) \
 	ledchip1(cmd,value);	\
 	ledchip2(cmd,value);
@@ -127,27 +135,6 @@ void ledclear2(void){
 	ledchip2(max7219_reg_digit5,MAX7219_CLEAR_LED);
 	ledchip2(max7219_reg_digit6,MAX7219_CLEAR_LED);
 	ledchip2(max7219_reg_digit7,MAX7219_CLEAR_LED);
-}
-
-void ledclear1_all0(void){
-	ledchip1(max7219_reg_digit0,0);
-	ledchip1(max7219_reg_digit1,0);
-	ledchip1(max7219_reg_digit2,0);
-	ledchip1(max7219_reg_digit3,0);
-	ledchip1(max7219_reg_digit4,0);
-	ledchip1(max7219_reg_digit5,0);
-	ledchip1(max7219_reg_digit6,0);
-	ledchip1(max7219_reg_digit7,0);
-}
-void ledclear2_all0(void){
-	ledchip2(max7219_reg_digit0,0);
-	ledchip2(max7219_reg_digit1,0);
-	ledchip2(max7219_reg_digit2,0);
-	ledchip2(max7219_reg_digit3,0);
-	ledchip2(max7219_reg_digit4,0);
-	ledchip2(max7219_reg_digit5,0);
-	ledchip2(max7219_reg_digit6,0);
-	ledchip2(max7219_reg_digit7,0);
 }
 
 void setIntensity1(uns8 intensity){
