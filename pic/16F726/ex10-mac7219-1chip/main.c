@@ -41,7 +41,7 @@ enum { K_START = 0b.0000.0001,
 	};
 
 #include "sci-lib.c"
-#include "max7219-2chip.c"
+#include "max7219-1chip.c"
 #include "fsm.c"
 #include "key.c"
 #include "common.c"
@@ -150,36 +150,27 @@ void main( void)
 								//  0100 1:32 , 20MHz , 10M/4/32=> 6.4us, 6.4*156 = 0.9984ms	
 								//  0011 1:16 , 20MHz , 10M/4/16=> 3.2us, 3.2*156 = 0.499ms	
 	OPTION	= 0x84;		//	0011 1:16 , 10MHz , 10M/4/16=> 6.4us, 6.4u*156 = 0.998ms	
-
-while(1){
-//	setCommand2(max7219_reg_digit0,5);
-	setCmd2(max7219_reg_digit1,5,max7219_reg_digit0,7);
-//	setCommand2(max7219_reg_digit1,1);
-//	setCommand2(max7219_reg_digit2,2);
-//	setCommand2(max7219_reg_digit3,3);
-//	setCommand2(max7219_reg_digit4,4);
-//	setCommand2(max7219_reg_digit5,5);
-//	setCommand2(max7219_reg_digit6,6);
-//	setCommand2(max7219_reg_digit7,7);
-//	delay_us(10);
-	//delay1s();
-}
-//	while(1);
 /*
-	setCmdChip1(max7219_reg_digit0,9);
-	setCmdChip1(max7219_reg_digit1,8);
-	setCmdChip1(max7219_reg_digit2,7);
-	setCmdChip1(max7219_reg_digit3,6);
-	setCmdChip1(max7219_reg_digit4,5);
-	setCmdChip1(max7219_reg_digit5,4);
-	setCmdChip1(max7219_reg_digit6,3);
-	setCmdChip1(max7219_reg_digit7,2);
-
-	setCmdChip2(max7219_reg_digit0,0);
-	setCmdChip2(max7219_reg_digit1,1);
-	setCmdChip2(max7219_reg_digit2,2);
-	setCmdChip2(max7219_reg_digit3,3);
+	while(1){
+	setCmdChip1(max7219_reg_digit0,0);
+	setCmdChip1(max7219_reg_digit1,1);
+	setCmdChip1(max7219_reg_digit2,2);
+	setCmdChip1(max7219_reg_digit3,3);
+	setCmdChip1(max7219_reg_digit4,4);
+	setCmdChip1(max7219_reg_digit5,5);
+	setCmdChip1(max7219_reg_digit6,6);
+	setCmdChip1(max7219_reg_digit7,7);
+	delay1s();
+	}
 */
+	setCmdChip1(max7219_reg_digit0,9);
+	setCmdChip1(max7219_reg_digit1,9);
+	setCmdChip1(max7219_reg_digit2,9);
+	setCmdChip1(max7219_reg_digit3,9);
+	setCmdChip1(max7219_reg_digit4,9);
+	setCmdChip1(max7219_reg_digit5,9);
+	setCmdChip1(max7219_reg_digit6,9);
+	setCmdChip1(max7219_reg_digit7,9);
 
 	while(1){
 		timerTick();

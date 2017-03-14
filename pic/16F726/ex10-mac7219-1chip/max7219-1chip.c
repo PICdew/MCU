@@ -55,7 +55,7 @@ https://github.com/t3chguy/arudino-maxmatrix-library
 #define send_spi(C)\
 	SSPBUF = C;\
 	SSPIF = 0 ;\
-    while ( !SSPIF );
+    while ( !SSPIF );  
 
 #define MAX7219_DIGTAL_MODE
 
@@ -99,87 +99,39 @@ const uns8 var2led[10] = {
 void setCmdChip1(uns8 cmd,uns8 value){
 	MAX7219_LOAD_PIN = 0;
 
-//	send_spi(0x00);
-//	send_spi(0x00);
-	send_spi(cmd);
-	send_spi(value);
-//	MAX7219_LOAD_PIN = 0;
-	MAX7219_LOAD_PIN = 1;	/* max7219 , load rising active*/
-#asm
-	nop;
-	nop;
-#endasm
-}
-
-void setCmdChip2(uns8 cmd,uns8 value){
-	MAX7219_LOAD_PIN = 0;
-
 	send_spi(cmd);
 	send_spi(value);	
-	send_spi(0x00);
-	send_spi(0x00);	
 
-//	MAX7219_LOAD_PIN = 0;
+	MAX7219_LOAD_PIN = 0;
 	MAX7219_LOAD_PIN = 1;	/* max7219 , load rising active*/
-#asm
-	nop;
-	nop;
-#endasm	
-}
-
-//cmd1,value1 => for first max7219
-//cmd2,value2 => for second max7219
-
-void setCmd2(uns8 cmd1,uns8 value1,uns8 cmd2,uns8 value2){
-
-	MAX7219_LOAD_PIN = 0;
-
-	send_spi(cmd2);
-	send_spi(value2);
-	send_spi(cmd1);
-	send_spi(value1);	
-
-	MAX7219_LOAD_PIN = 0;
-	MAX7219_LOAD_PIN = 1;
-#asm
-	nop;
-	nop;
-#endasm	
-}
-
-
-
-void setCommand2(uns8 cmd,uns8 value){
-	setCmdChip1(cmd,value);
-	setCmdChip2(cmd,value);
 }
 
 void clear(void){
-	setCommand2(max7219_reg_digit0,MAX7219_CLEAR_LED);
-	setCommand2(max7219_reg_digit1,MAX7219_CLEAR_LED);
-	setCommand2(max7219_reg_digit2,MAX7219_CLEAR_LED);
-	setCommand2(max7219_reg_digit3,MAX7219_CLEAR_LED);
-	setCommand2(max7219_reg_digit4,MAX7219_CLEAR_LED);
-	setCommand2(max7219_reg_digit5,MAX7219_CLEAR_LED);
-	setCommand2(max7219_reg_digit6,MAX7219_CLEAR_LED);
-	setCommand2(max7219_reg_digit7,MAX7219_CLEAR_LED);
+	setCmdChip1(max7219_reg_digit0,MAX7219_CLEAR_LED);
+	setCmdChip1(max7219_reg_digit1,MAX7219_CLEAR_LED);
+	setCmdChip1(max7219_reg_digit2,MAX7219_CLEAR_LED);
+	setCmdChip1(max7219_reg_digit3,MAX7219_CLEAR_LED);
+	setCmdChip1(max7219_reg_digit4,MAX7219_CLEAR_LED);
+	setCmdChip1(max7219_reg_digit5,MAX7219_CLEAR_LED);
+	setCmdChip1(max7219_reg_digit6,MAX7219_CLEAR_LED);
+	setCmdChip1(max7219_reg_digit7,MAX7219_CLEAR_LED);
 }
 void setIntensity(uns8 intensity){
-	setCommand2(max7219_reg_intensity, intensity);
+	setCmdChip1(max7219_reg_intensity, intensity);
 }
 
 void max7129_init(void){
 	uns8 ch,v;
 	uns8 i;
 
-	setCommand2(max7219_reg_scanLimit, 0x07);
+	setCmdChip1(max7219_reg_scanLimit, 0x07);
 #ifdef MAX7219_DIGTAL_MODE	
-	setCommand2(max7219_reg_decodeMode, 0xff);  // Code B decode for digits 7–0	
+	setCmdChip1(max7219_reg_decodeMode, 0xff);  // Code B decode for digits 7–0	
 #else
-	setCommand2(max7219_reg_decodeMode, 0x00);  // using an led matrix (not digits)
+	setCmdChip1(max7219_reg_decodeMode, 0x00);  // using an led matrix (not digits)
 #endif
-	setCommand2(max7219_reg_shutdown, 0x01);    // not in shutdown mode
-	setCommand2(max7219_reg_displayTest, 0x00); // no display test
+	setCmdChip1(max7219_reg_shutdown, 0x01);    // not in shutdown mode
+	setCmdChip1(max7219_reg_displayTest, 0x00); // no display test
 
 	// empty registers, turn all LEDs off
 	clear();

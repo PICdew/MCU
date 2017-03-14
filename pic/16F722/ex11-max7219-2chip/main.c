@@ -1,11 +1,14 @@
-#include "16f726.h"
-#include "c_16f726.h"
+#include "16f722.h"
+#include "c_16f722.h"
 
 #pragma config = ( HS_ & WDTDIS_ & PWRTEN_ & MCLREN_ & UNPROTECT_ & BOREN_ & BORV25_ & PLLDIS_ & DEBUGDIS_ )
 
 #pragma bit TRISC6   @ 0x87.6
 #pragma bit TRISC7   @ 0x87.7
-#pragma bit MAX7219_LOAD_PIN	@ PORTC.2
+#pragma bit MAX7219_LOAD1_PIN	@ PORTC.2
+#pragma bit MAX7219_LOAD2_PIN	@ PORTC.1
+#pragma bit PORTC2	@ PORTC.2
+#pragma bit PORTC1	@ PORTC.1
 
 #pragma char KEY_PORT   @ PORTA
 
@@ -41,7 +44,7 @@ enum { K_START = 0b.0000.0001,
 	};
 
 #include "sci-lib.c"
-#include "max7219-2chip.c"
+#include "max7219-3chip.c"
 #include "fsm.c"
 #include "key.c"
 #include "common.c"
@@ -73,13 +76,15 @@ void init_spi(void){
 	bit7   WCOL:  0
 	bit6   SSPOV: 0 ,no receive overflow indicator bit(無使用SDI)
 	bit5   SSPEN: 1 ,enable SCK,SDO,SDI
-	bit4   CPK: 0, idle state for clk is a low level
+	bit4   CKP: 0, idle state for clk is a low level
 	bit0-3 SSPM<3:0>: 0000 SPI Master, clk = fosc/4, 20MHZ/4=5Mhz
+	                  0001 5M/16
+	                  0010 5M/64
 
 	max7219 clk 上升取DI，無動作clk為low
 	16f726 => master, CKP = 0,CKE = 1
 	*/
-	SSPCON	= 0b.0010.0001;	// 1.25MHz
+	SSPCON	= 0b.0010.0010;	// 1.25MHz
 
 	CKE 	= 1;
 	/*
@@ -88,10 +93,20 @@ void init_spi(void){
 	*/
 
 	/* low active, B0-B3 */
-	/* MAX7219_LOAD_PIN = 1 */
-	PORTC 	= 0b.0000.0100;
-	TRISC 	= 0b.0000.0000; /* output */
+	/* MAX7219_LOAD1_PIN = 1 */
+	/* MAX7219_LOAD2_PIN = 1 */	
+	PORTC 	= 0b.0000.0000;
+	TRISC 	= 0b.1101.0001; /* output */
+	//MAX7219_LOAD1_PIN = 1;
+	//MAX7219_LOAD2_PIN = 1;	
 }
+
+//SDO - RC5
+//CLK - RC3
+//LOAD1 - 
+//void init_gpio_spi(void){
+//
+//}
 
 
 
@@ -137,9 +152,6 @@ void main( void)
 	for(i=0; i<NText; i++) putch(text[i]);  crlf();
 	crlf();
 
-	max7129_init();		
-	//setCommand2(max7219_reg_digit0,0);
-
 	//OPTION  = 0x81 ;  1:4 prescaler ,20M/4/4=1.25M = 0.8u
     //          0x82 ;  1:8                            1.6u
     //          0x83 ;  1:16            20M/4/16 = 312.5K = 3.2us
@@ -151,19 +163,33 @@ void main( void)
 								//  0011 1:16 , 20MHz , 10M/4/16=> 3.2us, 3.2*156 = 0.499ms	
 	OPTION	= 0x84;		//	0011 1:16 , 10MHz , 10M/4/16=> 6.4us, 6.4u*156 = 0.998ms	
 
+	delayms(10);
+
+	ledcmd_init();
+    ledchip1(max7219_reg_digit0,0);
+    ledchip2(max7219_reg_digit0,1);
+
+	while(1){
+		for(i=0; i<8; i++){
+			j=i+1;
+			ledchip1(max7219_reg_digit0,i);
+			ledchip2(max7219_reg_digit0,j);
+			delay1s();
+		}
+	}
+/*
 while(1){
-//	setCommand2(max7219_reg_digit0,5);
-	setCmd2(max7219_reg_digit1,5,max7219_reg_digit0,7);
-//	setCommand2(max7219_reg_digit1,1);
-//	setCommand2(max7219_reg_digit2,2);
-//	setCommand2(max7219_reg_digit3,3);
-//	setCommand2(max7219_reg_digit4,4);
-//	setCommand2(max7219_reg_digit5,5);
-//	setCommand2(max7219_reg_digit6,6);
-//	setCommand2(max7219_reg_digit7,7);
-//	delay_us(10);
-	//delay1s();
+	set2LED(max7219_reg_digit0,0,max7219_reg_digit0,9);
+	set2LED(max7219_reg_digit1,1,max7219_reg_digit1,8);
+	set2LED(max7219_reg_digit2,2,max7219_reg_digit2,7);
+	set2LED(max7219_reg_digit3,3,max7219_reg_digit3,6);
+	set2LED(max7219_reg_digit4,4,max7219_reg_digit4,5);
+	set2LED(max7219_reg_digit5,5,max7219_reg_digit5,4);
+	set2LED(max7219_reg_digit6,6,max7219_reg_digit6,3);						
+	set2LED(max7219_reg_digit7,7,max7219_reg_digit7,2);
+	delay1s();
 }
+*/
 //	while(1);
 /*
 	setCmdChip1(max7219_reg_digit0,9);
