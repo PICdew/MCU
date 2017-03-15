@@ -29,10 +29,14 @@ typedef struct {
 
 Rxx rxdata;
 CMDxx cmddata;
+uns8  cmdret[5]; //cmd,b0,b1,b2,b3
 
 // <STX> <CMD><VALUE> <CHK> <ETX>
 //  <1>  <1><3>       <1>   <1>
 uns8 calculateBufChkSum(uns8 len);
+void putch(uns8 byte);
+void writeUNS8(uns8 v);
+
 
 #pragma origin 4
 interrupt int_server(void)
@@ -43,11 +47,20 @@ interrupt int_server(void)
 	if(RCIF){
 		//rx interrupte ,RCREG
 		ch = RCREG;
+		//putch(ch);
+		//RxCH = ch;
+		//rxdata.buf[rxdata.cnt] = ch;
+		//rxdata.cnt++;
+		//if(rxdata.cnt > RXBUF_MAX) rxdata.cnt=0;
+
+		//writeUNS8(ch);
+	//	putch(ch);
 
 	//i = ch >>4;
 	//puttx(hex2char2[i]);		//high 4-bit
 	//i = ch & 0x0f;
 	//puttx(hex2char2[i]);		//low 4-bit		
+
 
 		if(rxdata.b.dle){
 			if(rxdata.b.stx){
@@ -57,17 +70,31 @@ interrupt int_server(void)
 			rxdata.b.dle = 0;
 
 		}else if(ch == DLE){
+			//putch(DLE);
 			rxdata.b.dle = 1;
 
 		}else if(ch == ETX){
+			//putch(ETX);
 			rxdata.b.etx = 1;
 			rxdata.b.stx = 0;
 
 			if(rxdata.cnt >= 3){
 				len = rxdata.cnt - 1;
 				sum = calculateBufChkSum(len);
-				if(sum != rxdata.buf[rxdata.cnt])
+				
+				//putch(0xf1);
+				//putch(rxdata.cnt);
+				//putch(0xf1);
+				//for(i=0; i<rxdata.cnt; i++)
+				//	putch(rxdata.buf[i]);
+
+				//putch(0xf2);
+				//putch(sum);
+
+				if(sum != rxdata.buf[len]){
 					rxdata.b.etx = 0;
+					//putch(0xf2);
+				}
 			}else{
 				rxdata.b.etx = 0;
 			}
@@ -77,6 +104,7 @@ interrupt int_server(void)
 			rxdata.b.stx = 1;
 			rxdata.b.etx = 0;
 			rxdata.b.dle = 0;
+			//putch(STX);
 
 		}else if(rxdata.b.stx){
 			rxdata.buf[rxdata.cnt] = ch;
@@ -85,6 +113,7 @@ interrupt int_server(void)
 		}
 
 		//TXREG = ch;
+		//RCIF = 0;
 	}
 
 
@@ -122,7 +151,7 @@ uns8 calculateBufChkSum(uns8 len){
 	return sum;
 }
 
-uns8 getCmd(uns8 cmd,uns8 b0, uns8 b1, uns8 b2, uns8 b3){
+uns8 getCmd(void){
 	uns8 ret,tail;
 
 	if( cmddata.head == cmddata.tail ){
@@ -130,11 +159,11 @@ uns8 getCmd(uns8 cmd,uns8 b0, uns8 b1, uns8 b2, uns8 b3){
 	}else{
 		ret  = 1;
 		tail = cmddata.tail;
-		cmd  = cmddata.cmd[tail];
-		b3   = cmddata.b3[tail];
-		b2   = cmddata.b2[tail];	
-		b1   = cmddata.b1[tail];
-		b0   = cmddata.b0[tail];
+		cmdret[0]  = cmddata.cmd[tail];
+		cmdret[1]   = cmddata.b0[tail];
+		cmdret[2]   = cmddata.b1[tail];	
+		cmdret[3]   = cmddata.b2[tail];
+		cmdret[4]   = cmddata.b3[tail];
 
 		tail =  tail +1;
 		if(tail >= CMDxx_SIZE ) tail = 0;
@@ -198,4 +227,3 @@ void printCmd(void){
 
 	}
 }
-

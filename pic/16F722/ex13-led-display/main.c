@@ -16,8 +16,6 @@
 #pragma wideConstData p	
 
 /* global variables */
-#define NText 	12
-const char text[NText] = "Hello world!";
 
 //OPTION  = 0x84 ;  1:32 prescaler ,20M/4/32 = 156.25K  = 6.4us 
 #define	DELAY_100U		(unsigned char)(256 -(100.0/6.4) +2)  	
@@ -25,30 +23,6 @@ const char text[NText] = "Hello world!";
 #include "int16CXX.h"
 #include "lcd-sci.h"
 #include "sci-lib.c"
-
-/* key value */
-uns8 previousTMR0;
-uns8 subClock;
-uns8 timer1, timer2L, timer2H;
-bit timeout1, timeout2;
-uns8 state1, state2;
-bit keyState;
-
-bit keyEvent;
-uns8 keyValue;
-uns8 LEDCnt;
-uns8 LED2Value;
-
-
-enum { K_START = 0b.0000.0001, 
-	   K_SET   = 0b.0000.0010, 
-	   K_UP    = 0b.0000.0100, 
-	   K_DOWN  = 0b.0000.1000,
-	   K_LEFT  = 0b.0001.0000,
-	   K_RIGHT = 0b.0010.0000 
-	};
-
-
 #include "common.c"
 #include "max7219-2chip-spi-gpio.c"
 
@@ -93,9 +67,6 @@ void process_num(uns8 chipnumber,uns8 b0,uns8 b1,uns8 b2,uns8 b3);
 
 void main( void)
 {
-	uns8	i,j;
-	uns8	cmd,value1,value0;
-	uns8	ret;
     if (TO == 1 && PD == 1 /* power up */)  {
     //   WARM_RESET:
          clearRAM(); // clear all RAM
@@ -127,69 +98,36 @@ void main( void)
 	GIE		= 1;
 
     while(1){
-        i++;
-        if(i>8) i=0;
-       j=i+1; 
-    //ledchip1(max7219_reg_digit0,i);
-    //ledchip1(max7219_reg_digit1,i);
-    //ledchip1(max7219_reg_digit2,i);
-    //ledchip1(max7219_reg_digit3,i);
-    //ledchip1(max7219_reg_digit4,i);
-    //ledchip1(max7219_reg_digit5,i);
-    //ledchip1(max7219_reg_digit6,i);
-    //ledchip1(max7219_reg_digit7,i);
-
-    ledchip2(max7219_reg_digit0,j);
-    ledchip2(max7219_reg_digit1,j);
-    ledchip2(max7219_reg_digit2,j);
-    ledchip2(max7219_reg_digit3,j);
-    ledchip2(max7219_reg_digit4,j);
-    ledchip2(max7219_reg_digit5,j);
-    ledchip2(max7219_reg_digit6,j);
-    ledchip2(max7219_reg_digit7,j);
-			delay1s();
-			process_cmd();
-/*
-			ret = getCmd(cmd,value1,value0);
-
-			if(ret == 0){
-				putch(cmd);
-				putch(value1);
-				putch(value0);
-				crlf();
-			}
-*/
+		process_cmd();
     }
 }
 
-/*
-#define CHIP1NUB    	0x60
-#define CHIP2NUB    	0x61
-#define CHIP1REG    	0x62
-#define CHIP2REG    	0x63
-
-#define NUM_DP			0xA
-#define NUM_CLEAR       0xB
-#define NUM_NULL        0xF
-*/
-
 void process_cmd(void){
+	uns8 ret,cmd,b0,b1,b2,b3;
 
-	uns8 ret,cmd,b3,b2,b1,b0;
-
-	ret=getCmd(cmd,b0,b1,b2,b3);
+	ret=getCmd();
 	if(ret == 1){
-		if(cmd == CHIP1NUB){
+		cmd = cmdret[0];
+		b0  = cmdret[1];
+		b1  = cmdret[2];
+		b2  = cmdret[3];
+		b3  = cmdret[4];
+
+		if(cmd == CHIP1NUM){
+			putch(0xf1);
 			process_num(1,b0,b1,b2,b3);
 
-		}else if(cmd == CHIP2NUB){
+		}else if(cmd == CHIP2NUM){
+			putch(0xf2);
 			process_num(2,b0,b1,b2,b3);
 
 		}else if(cmd == CHIP1REG){
-			//ledchip(1,b0,b1);
+			putch(0xf3);
+			ledchip(1,b0,b1);
 
 		}else if(cmd == CHIP2REG){
-			//ledchip(2,b0,b1);
+			putch(0xf4);
+			ledchip(2,b0,b1);
 		}
 	}
 }

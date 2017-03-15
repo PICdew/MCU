@@ -112,10 +112,6 @@ void ledchip(uns8 chipnumber, uns8 cmd, uns8 value){
 	}
 }
 
-#define ledcmd(cmd,value) \
-	ledchip1(cmd,value);	\
-	ledchip2(cmd,value);
-
 void ledclear1(void){
 	ledchip1(max7219_reg_digit0,MAX7219_CLEAR_LED);
 	ledchip1(max7219_reg_digit1,MAX7219_CLEAR_LED);
