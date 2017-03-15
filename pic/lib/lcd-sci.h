@@ -5,7 +5,6 @@
 
 #define RXBUF_MAX	10
 #define CMD_SIZE    1
-#define VALUE_SIZE  3
 
 #define STX		0x0f
 #define ETX		0x04
@@ -47,8 +46,8 @@ CMD : REGISTER-CHP2
 
 
 
-#define CHIP1NUB    	0x60
-#define CHIP2NUB    	0x61
+#define CHIP1NUM    	0x60
+#define CHIP2NUM    	0x61
 #define CHIP1REG    	0x62
 #define CHIP2REG    	0x63
 
