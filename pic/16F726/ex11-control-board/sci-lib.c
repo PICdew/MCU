@@ -6,12 +6,8 @@ typedef struct {
 typedef struct {
 	uns8 cmd;
 	uns8 n[8];
+	uns8 dp;
 } CMDxx;
-
-//#define putch(c)	\
-//	while(!TXIF)	\
-//		continue;	\
-//	TXREG = c;		\
 
 Txx txdata;
 CMDxx cmddata;
@@ -88,11 +84,13 @@ uns8 createTXData(void){
 		if(cmddata.cmd == CHIP1NUM){
 			txdata.buf[3] = getbx(cmddata.n[4],cmddata.n[5]);
 			txdata.buf[4] = getbx(cmddata.n[6],cmddata.n[7]);
-			txdata.buf[5] = calculateBufChkSum(5);
-			txdata.len    = 6;
+			txdata.buf[5] = cmddata.dp;
+			txdata.buf[6] = calculateBufChkSum(6);
+			txdata.len    = 7;
 		}else{
-			txdata.buf[3] = calculateBufChkSum(3);
-			txdata.len    = 4;
+			txdata.buf[3] = cmddata.dp;
+			txdata.buf[4] = calculateBufChkSum(4);
+			txdata.len    = 5;
 		}
 
 		ret = 1;

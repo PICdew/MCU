@@ -41,6 +41,7 @@ void app_entry(){
 		cmddata.n[5] = 5;
 		cmddata.n[6] = 6;
 		cmddata.n[7] = 7;
+		cmddata.dp = 0;
 		cmddata.n[LED2Value] = 9;
 		send_sci();
 	}
@@ -60,6 +61,7 @@ void app_entry(){
 		cmddata.n[1] = LEDCnt;
 		cmddata.n[2] = LEDCnt;
 		cmddata.n[3] = LEDCnt;	
+		cmddata.dp = (NUM2_DP);
 		send_sci();
 	}
 }

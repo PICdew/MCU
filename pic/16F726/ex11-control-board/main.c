@@ -142,6 +142,7 @@ void main( void)
 								//  0011 1:16 , 20MHz , 10M/4/16=> 3.2us, 3.2*156 = 0.499ms	
 	OPTION	= 0x84;		//	0011 1:16 , 10MHz , 10M/4/16=> 6.4us, 6.4u*156 = 0.998ms	
 
+	delayms(100);
 	while(1){
 		timerTick();
         /* Not more than 1 (2) millisec.

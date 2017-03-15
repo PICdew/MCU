@@ -63,7 +63,7 @@ void init_gpio(void){
 }
 
 void process_cmd(void);
-void process_num(uns8 chipnumber,uns8 b0,uns8 b1,uns8 b2,uns8 b3);
+void process_num(uns8 chipnumber,uns8 b0,uns8 b1,uns8 b2,uns8 b3,uns8 dp);
 
 void main( void)
 {
@@ -103,7 +103,7 @@ void main( void)
 }
 
 void process_cmd(void){
-	uns8 ret,cmd,b0,b1,b2,b3;
+	uns8 ret,cmd,b0,b1,b2,b3,dp;
 
 	ret=getCmd();
 	if(ret == 1){
@@ -112,34 +112,30 @@ void process_cmd(void){
 		b1  = cmdret[2];
 		b2  = cmdret[3];
 		b3  = cmdret[4];
+		dp  = cmdret[5];
 
 		if(cmd == CHIP1NUM){
-			putch(0xf1);
-			process_num(1,b0,b1,b2,b3);
+			process_num(1,b0,b1,b2,b3,dp);
 
 		}else if(cmd == CHIP2NUM){
-			putch(0xf2);
-			process_num(2,b0,b1,b2,b3);
+			dp = b2;
+			process_num(2,b0,b1,b2,b3,dp);
 
 		}else if(cmd == CHIP1REG){
-			putch(0xf3);
 			ledchip(1,b0,b1);
 
 		}else if(cmd == CHIP2REG){
-			putch(0xf4);
 			ledchip(2,b0,b1);
 		}
 	}
 }
 
-void send_chip_num(uns8 chipnumber,uns8 num,uns8 value){
-	uns8 data=NUM_NULL;
+void send_chip_num(uns8 chipnumber,uns8 num,uns8 value,uns8 dp){
+	uns8 data;
 
 	if( (value >=0) && (value < 0xa)){
 		data = value;
-
-	}else if(value == NUM_DP){
-		data = 0x80;
+		if(dp) data |= 0x80;
 
 	}else if(value == NUM_CLEAR){
 		data = MAX7219_CLEAR_LED;
@@ -153,26 +149,27 @@ void send_chip_num(uns8 chipnumber,uns8 num,uns8 value){
 	}
 }
 
-void process_num(uns8 chipnumber,uns8 b0,uns8 b1,uns8 b2,uns8 b3){
+void process_num(uns8 chipnumber,uns8 b0,uns8 b1,uns8 b2,uns8 b3,uns8 dp){
 	uns8 n0,n1,n2,n3;
 
 	n0 = b0 & 0xf;
 	n1 = (b0 & 0xf0) >> 4;
 	n2 = b1 & 0xf;
 	n3 = (b1 & 0xf0) >> 4;
-	send_chip_num(chipnumber,max7219_reg_digit0,n0);
-	send_chip_num(chipnumber,max7219_reg_digit1,n1);
-	send_chip_num(chipnumber,max7219_reg_digit2,n2);
-	send_chip_num(chipnumber,max7219_reg_digit3,n3);
+
+	send_chip_num(chipnumber,max7219_reg_digit0,n0,(dp & NUM0_DP));
+	send_chip_num(chipnumber,max7219_reg_digit1,n1,(dp & NUM1_DP));
+	send_chip_num(chipnumber,max7219_reg_digit2,n2,(dp & NUM2_DP));
+	send_chip_num(chipnumber,max7219_reg_digit3,n3,(dp & NUM3_DP));
 
 	if( chipnumber == 1 ){
 		n0 = b2 & 0xf;
 		n1 = (b2 & 0xf0) >> 4;
 		n2 = b3 & 0xf;
 		n3 = (b3 & 0xf0) >> 4;
-		send_chip_num(chipnumber,max7219_reg_digit4,n0);
-		send_chip_num(chipnumber,max7219_reg_digit5,n1);
-		send_chip_num(chipnumber,max7219_reg_digit6,n2);
-		send_chip_num(chipnumber,max7219_reg_digit7,n3);
+		send_chip_num(chipnumber,max7219_reg_digit4,n0,(dp & NUM4_DP));
+		send_chip_num(chipnumber,max7219_reg_digit5,n1,(dp & NUM5_DP));
+		send_chip_num(chipnumber,max7219_reg_digit6,n2,(dp & NUM6_DP));
+		send_chip_num(chipnumber,max7219_reg_digit7,n3,(dp & NUM7_DP));
 	}
 }

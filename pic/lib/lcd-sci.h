@@ -51,6 +51,13 @@ CMD : REGISTER-CHP2
 #define CHIP1REG    	0x62
 #define CHIP2REG    	0x63
 
-#define NUM_DP			0xA
-#define NUM_CLEAR       0xB
-#define NUM_NULL        0xF
+#define NUM_CLEAR       0xA
+
+#define NUM0_DP			0x1
+#define NUM1_DP			0x2
+#define NUM2_DP			0x4
+#define NUM3_DP			0x8
+#define NUM4_DP			0x10
+#define NUM5_DP			0x20
+#define NUM6_DP			0x40
+#define NUM7_DP			0x80
