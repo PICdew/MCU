@@ -21,13 +21,15 @@ const char text[NText] = "Hello world!";
 /* key value */
 uns8 previousTMR0;
 uns8 subClock;
-uns8 timer1, timer2L, timer2H, timer3;
-bit timeout1, timeout2, timeout3;
+uns8 timer1, timer2L, timer2H, timer3, timer4L, timer4H, timer5L, timer5H;
+bit timeout1, timeout2, timeout3, timeout4,timeout5;  //timeout5 key3S
 uns8 state1, state2, state3, state3_1;
 bit keyState;
 
 bit keyEvent;
+bit Key3S;
 uns8 keyValue;
+uns8 keyEventValue;
 uns8 LEDCnt;
 uns8 LED2Value;
 
@@ -43,6 +45,14 @@ bit    	portb5_0;
 bit    	portb5_1;
 
 enum { KEY_START=1, KEY_SET=2, KEY_UP=3,  KEY_DOWN=4, KEY_LEFT=5, KEY_RIGHT=6};
+
+typedef union{
+	char v;
+	struct {
+		char    en:1;
+		char    light:1;
+	}b;
+}LightStatusXX;	
 
 typedef struct {
 	uns8 pitchLED[3];
@@ -60,6 +70,9 @@ typedef struct {
 	uns8 scoreCnt;
 	uns8 timeValue[2]; //[0]:sec, [1]:min
 	uns8 timeCnt[2];
+
+	//for led light
+	LightStatusXX light;
 } VARLEDxx;
 
 VARLEDxx varled;

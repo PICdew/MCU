@@ -3,11 +3,13 @@
  APP STATE MACHINES
 */
 
-enum { APP_BOOTING=2, APP_ENTRY=3, APP_SET=4, APP_START=5, APP_STOP=6};
+enum { APP_BOOTING=2, APP_ENTRY=3, APP_SET=4, APP_SET_FINISH=5, APP_START=6, APP_STOP=7};
 enum { SET_PITCH=1, SET_SCORE=2, SET_TIME=3, SET_TIME_DOWNCNT=4 };
 
 #define Delay_100MS  (100)
 #define Delay_1000MS  (1000)
+#define Delay_500MS  (500)
+#define Delay_300MS  (300)
 
 #define startTimer2(c)		\
 	timer2L		= (c)%256;	\
@@ -17,6 +19,11 @@ enum { SET_PITCH=1, SET_SCORE=2, SET_TIME=3, SET_TIME_DOWNCNT=4 };
 #define startTimer3(c)		\
 	timer3 		= c;		\
 	timeout3	= 0;
+
+#define startTimer4(c)		\
+	timer4L		= (c)%256;	\
+	timer4H		= (c)/256;	\
+	timeout4	= 0;	
 
 
 void initapp(void){
@@ -44,11 +51,42 @@ void getSensor(void){
 uns8 get_keyvalue(void){
 	uns8 key = 0;
 
-	if( (keyState ==1 ) && (keyEvent == 1) ){
+	if( keyEvent == 1 ){
 		keyEvent = 0;
-		key = keyValue;
+		key = keyEventValue;
 	}
 	return key;	
+}
+
+uns8 clearByLight(void){
+	uns8 val = 0;
+
+	if(state3 == SET_PITCH){
+		val = varled.pitchLED[varled.pitchKeyPos];
+		varled.pitchLED[varled.pitchKeyPos] = NUM_CLEAR;
+
+	}else if(state3 == SET_SCORE){
+		val = varled.scoreLED[varled.scoreKeyPos];
+		varled.scoreLED[varled.scoreKeyPos] = NUM_CLEAR;
+
+	}else if((state3 == SET_TIME) || (state3 == SET_TIME_DOWNCNT)){
+		val = varled.timeLED[varled.timeKeyPos];
+		varled.timeLED[varled.timeKeyPos] = NUM_CLEAR;
+	}
+	return val;
+}
+
+void restoreByLight(uns8 val){
+
+	if(state3 == SET_PITCH){
+		varled.pitchLED[varled.pitchKeyPos] = val;
+
+	}else if(state3 == SET_SCORE){
+		varled.scoreLED[varled.scoreKeyPos] = val;
+
+	}else if((state3 == SET_TIME) || (state3 == SET_TIME_DOWNCNT)){
+		varled.timeLED[varled.timeKeyPos] = val;
+	}
 }
 
 void varLED2display(void){
@@ -75,9 +113,9 @@ void varLED2display(void){
 
 void init_varled(void){
 	varled.pitchLED[0] = 0;
-	varled.pitchLED[1] = 2;
-	varled.pitchLED[2] = NUM_CLEAR;
-	varled.pitchKeyPos = 1;
+	varled.pitchLED[1] = 0;
+	varled.pitchLED[2] = 0;
+	varled.pitchKeyPos = 0;
 
 	varled.percentLED[0] = SET_PITCH;
 	varled.percentLED[1] = NUM_CLEAR;
@@ -99,6 +137,8 @@ void init_varled(void){
 	varled.percentValue = 0;
 	varled.timeValue[0] = 0;
 	varled.timeValue[1] = 0;
+	varled.light.v = 0;
+	varled.light.b.en = 1;		
 }
 
 void set_init_varled(void){
@@ -127,6 +167,9 @@ void set_init_varled(void){
 	varled.percentValue = 0;
 	varled.timeValue[0] = 0;
 	varled.timeValue[1] = 0;
+
+	varled.light.v = 0;
+	varled.light.b.en = 1;	
 }
 
 
@@ -139,7 +182,7 @@ uns8 getCntUp(uns8 cnt,uns8 max){
 uns8 getCntDown(uns8 num,uns8 max){
 	uns8 ret=0;
 
-	if(num > 1){
+	if(num >= 1){
 		ret = num -1;
 	}else{
 		ret = max;
@@ -161,12 +204,10 @@ void updatePitchLED(uns8 key){
 	}else if(key == KEY_LEFT){
 		pos++;
 		if(pos > 2) pos =2;
-		varled.pitchLED[pos] = 1;
 		varled.pitchKeyPos = pos;
 
 	}else if(key == KEY_RIGHT){
 		if(pos >= 1){
-			varled.pitchLED[pos]=NUM_CLEAR;
 			pos--;
 			varled.pitchKeyPos = pos;
 		}
@@ -188,13 +229,11 @@ void updateScoreLED(uns8 key){
 	}else if(key == KEY_LEFT){
 		pos++;
 		if(pos > 2) pos =2;
-		varled.scoreLED[pos] = 1;
 		varled.scoreKeyPos = pos;
 		
 
 	}else if(key == KEY_RIGHT){
 		if(pos >= 1){
-			varled.scoreLED[pos]=NUM_CLEAR;
 			pos--;
 			varled.scoreKeyPos = pos;
 		}
@@ -218,17 +257,33 @@ void updateTimeLED(uns8 key){
 	}else if(key == KEY_LEFT){
 		pos++;
 		if(pos > 3) pos =3;
-		varled.timeLED[pos] = 1;
 		varled.timeKeyPos = pos;
 
 	}else if(key == KEY_RIGHT){
 		if(pos >= 1){
-			varled.timeLED[pos]=NUM_CLEAR;
 			pos--;
 			varled.timeKeyPos = pos;
 		}
 	}	
 	
+}
+
+uns8 checkSetFinish(void){
+	uns8 ret = 0;
+
+	if(state3 == SET_PITCH){
+		if( varled.pitchLED[0] || varled.pitchLED[1] || varled.pitchLED[2] )
+			ret = 1;
+
+	}else if(state3 == SET_SCORE){
+		if( varled.scoreLED[0] || varled.scoreLED[1] || varled.scoreLED[2] )
+			ret = 1;
+
+	}else if((state3 == SET_TIME) || (state3 == SET_TIME_DOWNCNT)){
+		if( varled.timeLED[0] || varled.timeLED[1] || varled.timeLED[2] || varled.timeLED[3] )
+			ret = 1;
+	}
+	return ret;
 }
 
 void app_set_mode_display(uns8 key){
@@ -242,29 +297,27 @@ void app_set_mode_display(uns8 key){
 
 		if(state3 == SET_PITCH){
 			varled.pitchLED[0] = 0;
-			varled.pitchLED[1] = 1;
-			varled.pitchKeyPos = 1;
-			//varled.pitchLED[2] = 0;
+			varled.pitchLED[1] = 0;
+			varled.pitchLED[2] = 0;
+			varled.pitchKeyPos = 0;
 
 		}else if(state3 == SET_SCORE){
 			varled.scoreLED[0] = 0;
-			varled.scoreLED[1] = 1;
-			varled.scoreKeyPos = 1;
-			//varled.scoreLED[2] = 0;
-
+			varled.scoreLED[1] = 0;
+			varled.scoreLED[2] = 0;			
+			varled.scoreKeyPos = 0;
 
 		}else if((state3 == SET_TIME) || (state3 == SET_TIME_DOWNCNT)){
 			varled.timeLED[0] = 0;
-			varled.timeLED[1] = 1;
-			varled.timeKeyPos = 1;
-			//varled.timeLED[2] = 0;
-			//varled.timeLED[3] = 0;
+			varled.timeLED[1] = 0;
+			varled.timeLED[2] = 0;
+			varled.timeLED[3] = 0;
+			varled.timeKeyPos = 0;
 			varled.dpLED[1] = NUM2_DP;
 		}
 	}
 	
 	varled.percentLED[0] = state3;
-	varled.percentLED[1] = key; 
 
 	if( (key == KEY_UP) || (key == KEY_DOWN) || (key == KEY_LEFT) || (key == KEY_RIGHT) ){
 
@@ -303,7 +356,6 @@ void init_display(void){
 }
 
 void time_task(void){
-	
 	//50ms
 	if(timeout3){
 		startTimer3(50);
@@ -312,8 +364,29 @@ void time_task(void){
 	//1S
 	if(timeout2){
 		startTimer2(Delay_1000MS);
-		varLED2display();
 	}	
+}
+
+void app_set_time_task(void){
+	uns8 val;
+
+	//0.3S
+	if(timeout4 ){
+		startTimer4(Delay_300MS);
+		if(varled.light.b.en == 1){
+			if(varled.light.b.light == 0){
+				val = clearByLight();
+				varLED2display();
+				restoreByLight(val);
+				varled.light.b.light = 1;
+			}else{
+				varLED2display();
+				varled.light.b.light = 0;
+			}
+		}else{
+			varLED2display();
+		}
+	}		
 }
 
 void fsm3(uns8 key){
@@ -346,7 +419,7 @@ void fsm3(uns8 key){
 
 void fsm2( void)
 {
-	uns8 key;
+	uns8 key,finish;
 
 	switch(state2){
 		case APP_BOOTING:
@@ -357,14 +430,31 @@ void fsm2( void)
 			break;
 
 		case APP_SET:
-			key = get_keyvalue();
-			if(key == KEY_START){
-				state2 = APP_START;
+			key = get_keyvalue();		
+			finish = 0;
+			if( (Key3S==1) && (keyState == 1) && (keyValue == KEY_SET) ){
+				finish = checkSetFinish();
+
+				if(finish){
+					state2 = APP_SET_FINISH;
+					varLED2display();
+				}
 			}else if(key){
 				fsm3(key);
 				app_set_mode_display(key);
 			}
-			time_task();
+
+			if( finish == 0)
+				app_set_time_task();
+			break;
+
+		case APP_SET_FINISH:
+			key = get_keyvalue();
+			if( (key == KEY_SET) && (Key3S==0)){
+				state2 = APP_SET;
+			}else if( key == KEY_START){
+				state2 = APP_START;
+			}
 			break;
 
 		case APP_START:

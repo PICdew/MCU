@@ -4,7 +4,7 @@
 */
 
 
-enum { OPEN=1, PRESSING=2, PRESSED=3,  OPENING=4 };
+enum { OPEN=1, PRESSING=2, PRESSED=3,  OPENING=4};
 
 enum { K_START_BIT = 0b.0000.0001, 
 	   K_SET_BIT   = 0b.0000.0010, 
@@ -18,11 +18,18 @@ enum { K_START_BIT = 0b.0000.0001,
 	timer1 		= c;		\
 	timeout1	= 0;
 
+#define DEF_3S  (2000)
+#define startTimer5(c)		\
+	timer5L		= (c)%256;	\
+	timer5H		= (c)/256;	\
+	timeout5	= 0;	
+
 
 void initkey(void){
     timeout1	= 1;
     timeout2 	= 1;
     timeout3    = 1;
+    timeout4    = 1;
 	keyState	= 0;
 	keyEvent 	= 0;
 	state1  	= OPEN;
@@ -79,7 +86,22 @@ void timerTick()
 			timer3--;
 			if(timer3 == 255)
 				timeout3 = 1;
-		}				
+		}
+
+
+		if(!timeout4){
+			if(--timer4L == 255){
+				if(--timer4H == 255)
+					timeout4 = 1;
+			}
+		}
+
+		if(!timeout5){
+			if(--timer5L == 255){
+				if(--timer5H == 255)
+					timeout5 = 1;
+			}
+		}		
 	}
 }
 
@@ -93,8 +115,6 @@ void fsm1(){
 				startTimer1(50);
 				state1 = PRESSING;
 				keyValue = key;
-				//writeCString("PRESSING");
-				//crlf();
 			}
 			break;
 		
@@ -102,11 +122,10 @@ void fsm1(){
 			if(key != keyValue)
 				state1 = OPEN;
 			else if(timeout1){
+				Key3S = 0;
 				keyState = 1;
-				keyEvent = 1;
-				state1 = PRESSED;
-				//writeCString("PRESSED");
-				//crlf();				
+				state1 = PRESSED;				
+				startTimer5(DEF_3S);
 			}
 			break;
 		
@@ -114,6 +133,9 @@ void fsm1(){
 			if(key != keyValue){
 				startTimer1(50);
 				state1 = OPENING;
+			}else{
+				if(timeout5)
+					Key3S = 1;
 			}
 			break;
 
@@ -122,9 +144,9 @@ void fsm1(){
 				state1=PRESSED;
 			else if(timeout1){
 				keyState = 0;
-				state1 	 = OPEN;
-				//writeCString("OPEN");
-				//crlf();				
+				keyEvent = 1;
+				keyEventValue = keyValue;
+				state1 	 = OPEN;			
 			}
 			break;
 	}
