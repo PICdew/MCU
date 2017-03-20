@@ -137,6 +137,9 @@ void send_chip_num(uns8 chipnumber,uns8 num,uns8 value,uns8 dp){
 		data = value;
 		if(dp) data |= 0x80;
 
+	}else if( dp && (value==NUM_CLEAR) ){
+		data = 0x8F;
+
 	}else if(value == NUM_CLEAR){
 		data = MAX7219_CLEAR_LED;
 
