@@ -18,6 +18,45 @@ const char text[NText] = "Hello world!";
 //OPTION  = 0x84 ;  1:32 prescaler ,20M/4/32 = 156.25K  = 6.4us 
 #define	DELAY_100U		(unsigned char)(256 -(100.0/6.4) +2)  	
 
+enum { KEY_START=1, KEY_SET=2, KEY_UP=3,  KEY_DOWN=4, KEY_LEFT=5, KEY_RIGHT=6};
+
+typedef union{
+	char v;
+	struct {
+		char    light_en:1;
+		char    light:1;
+		char    app_run_finish:1;
+	}b;
+}VARStatusXX;	
+
+typedef struct {
+	uns8 pitchLED[3];
+	uns8 pitchKeyPos;
+	uns8 percentLED[2];
+	uns8 scoreLED[3];
+	uns8 scoreKeyPos;
+	uns8 timeLED[4];
+	uns8 timeKeyPos;
+	uns8 dpLED[2];
+
+	//app run
+	uns16 pitchValue;
+	uns16 pitchCnt;
+	uns8 percentValue;
+	uns16 scoreValue;
+	uns16 scoreCnt;
+	uns8 timeValue[2]; //[0]:sec, [1]:min
+	uns8 timeCnt[2];
+
+	//for led light
+	VARStatusXX st;
+
+	//for mode finish;
+} VARLEDxx;
+
+#include "lcd-sci.h"
+
+#pragma rambank 0  // select default bank for the next definitions
 /* key value */
 uns8 previousTMR0;
 uns8 subClock;
@@ -33,8 +72,6 @@ uns8 keyEventValue;
 uns8 LEDCnt;
 uns8 LED2Value;
 
-uns8 vxx[3];
-
 bit bitScoreSensor, bitPitchSensor;
 
 uns8	cntScoreSensor;
@@ -44,38 +81,12 @@ bit    	portb4_1;
 bit    	portb5_0;
 bit    	portb5_1;
 
-enum { KEY_START=1, KEY_SET=2, KEY_UP=3,  KEY_DOWN=4, KEY_LEFT=5, KEY_RIGHT=6};
-
-typedef union{
-	char v;
-	struct {
-		char    en:1;
-		char    light:1;
-	}b;
-}LightStatusXX;	
-
-typedef struct {
-	uns8 pitchLED[3];
-	uns8 pitchKeyPos;
-	uns8 percentLED[2];
-	uns8 scoreLED[3];
-	uns8 scoreKeyPos;
-	uns8 timeLED[4];
-	uns8 timeKeyPos;
-	uns8 dpLED[2];
-	uns8 pitchValue;
-	uns8 pitchCnt;
-	uns8 percentValue;
-	uns8 scoreValue;
-	uns8 scoreCnt;
-	uns8 timeValue[2]; //[0]:sec, [1]:min
-	uns8 timeCnt[2];
-
-	//for led light
-	LightStatusXX light;
-} VARLEDxx;
-
+#pragma rambank 1  // select default bank for the next definitions
 VARLEDxx varled;
+uns8 vxx[3];
+
+#pragma rambank 2  // select default bank for the next definitions
+
 #include "int16CXX.h"
 #pragma origin 4
 interrupt int_server(void)
@@ -113,11 +124,14 @@ interrupt int_server(void)
    	int_restore_registers // W, STATUS (and PCLATH)
 }
 
-#include "lcd-sci.h"
+#pragma codepage 1   // select default codepage for following functions
 #include "sci-lib.c"
+#pragma codepage 2
 #include "fsm.c"
+#pragma codepage 3
 #include "key.c"
 #include "common.c"
+#pragma codepage 0
 
 void init_comms(void){
 	TRISC6 = 1;		// TX

@@ -3,7 +3,7 @@
  APP STATE MACHINES
 */
 
-enum { APP_BOOTING=2, APP_ENTRY=3, APP_SET=4, APP_SET_FINISH=5, APP_START=6, APP_STOP=7};
+enum { APP_BOOTING=2, APP_ENTRY=3, APP_SET=4, APP_SET_FINISH=5, APP_RUN=6, APP_PAUSE=7, APP_FINISH=8};
 enum { SET_PITCH=1, SET_SCORE=2, SET_TIME=3, SET_TIME_DOWNCNT=4 };
 
 #define Delay_100MS  (100)
@@ -35,6 +35,9 @@ void initapp(void){
 }
 
 void getHex2Vxx(uns8 v);
+void get16Hex2Vxx(uns16 v);
+uns16 getDec2Hex(uns8 v0, uns8 v10, uns8 v100);
+void varLED2Update(void);
 
 void getSensor(void){
 	uns8 i,j;
@@ -120,58 +123,26 @@ void init_varled(void){
 	varled.percentLED[0] = SET_PITCH;
 	varled.percentLED[1] = NUM_CLEAR;
 
-	varled.scoreLED[0] = NUM_CLEAR;
-	varled.scoreLED[1] = NUM_CLEAR;
-	varled.scoreLED[2] = NUM_CLEAR;
+	varled.scoreLED[0] = 0;
+	varled.scoreLED[1] = 0;
+	varled.scoreLED[2] = 0;
 	varled.scoreKeyPos = 0;
 	varled.dpLED[0] = 0;
 	
-	varled.timeLED[0] = NUM_CLEAR;
-	varled.timeLED[1] = NUM_CLEAR;
-	varled.timeLED[2] = NUM_CLEAR;
-	varled.timeLED[3] = NUM_CLEAR;	
+	varled.timeLED[0] = 0;
+	varled.timeLED[1] = 0;
+	varled.timeLED[2] = 0;
+	varled.timeLED[3] = 0;	
 	varled.timeKeyPos = 0;
-	varled.dpLED[1] = 0;
+	varled.dpLED[1] = NUM2_DP;
 
 	varled.pitchValue = 0;
 	varled.percentValue = 0;
 	varled.timeValue[0] = 0;
 	varled.timeValue[1] = 0;
-	varled.light.v = 0;
-	varled.light.b.en = 1;		
+	varled.st.v = 0;
+	varled.st.b.light_en = 1;		
 }
-
-void set_init_varled(void){
-	varled.pitchLED[0] = NUM_CLEAR;
-	varled.pitchLED[1] = NUM_CLEAR;
-	varled.pitchLED[2] = NUM_CLEAR;
-	varled.pitchKeyPos = 0;
-
-	varled.percentLED[0] = SET_PITCH;
-	varled.percentLED[1] = NUM_CLEAR;
-
-	varled.scoreLED[0] = NUM_CLEAR;
-	varled.scoreLED[1] = NUM_CLEAR;
-	varled.scoreLED[2] = NUM_CLEAR;
-	varled.scoreKeyPos = 0;
-	varled.dpLED[0] = 0;
-	
-	varled.timeLED[0] = NUM_CLEAR;
-	varled.timeLED[1] = NUM_CLEAR;
-	varled.timeLED[2] = NUM_CLEAR;
-	varled.timeLED[3] = NUM_CLEAR;	
-	varled.timeKeyPos = 0;
-	varled.dpLED[1] = 0;
-
-	varled.pitchValue = 0;
-	varled.percentValue = 0;
-	varled.timeValue[0] = 0;
-	varled.timeValue[1] = 0;
-
-	varled.light.v = 0;
-	varled.light.b.en = 1;	
-}
-
 
 uns8 getCntUp(uns8 cnt,uns8 max){
 	uns8 ret;
@@ -270,22 +241,66 @@ void updateTimeLED(uns8 key){
 
 uns8 checkSetFinish(void){
 	uns8 ret = 0;
+	uns8 v0,v1;
+
+	varled.pitchValue=0;
+	varled.pitchCnt=0;
+	
+	//varled.percentValue = 0;
+	//uns8 percentValue;
+	
+	varled.scoreValue=0;
+	varled.scoreCnt=0;
+
+	varled.timeCnt[0]	=0;	
+	varled.timeCnt[1] 	=0;
 
 	if(state3 == SET_PITCH){
-		if( varled.pitchLED[0] || varled.pitchLED[1] || varled.pitchLED[2] )
+		if( varled.pitchLED[0] || varled.pitchLED[1] || varled.pitchLED[2] ){
 			ret = 1;
+			varled.pitchValue = getDec2Hex(varled.pitchLED[0],varled.pitchLED[1],varled.pitchLED[2]);
+			//v0 = varled.pitchValue & 0xff;
+			//v1 = (varled.pitchValue >> 8);
+			//putch(0xf1);
+			//putch(v0);
+			//putch(0xf2);
+			//putch(v1);
+		}
 
 	}else if(state3 == SET_SCORE){
-		if( varled.scoreLED[0] || varled.scoreLED[1] || varled.scoreLED[2] )
+		if( varled.scoreLED[0] || varled.scoreLED[1] || varled.scoreLED[2] ){
 			ret = 1;
+			varled.scoreValue = getDec2Hex(varled.scoreLED[0],varled.scoreLED[1],varled.scoreLED[2]);
+			//v0 = varled.scoreValue & 0xff;
+			//v1 = (varled.scoreValue >> 8);
+			//putch(0xf3);
+			//putch(v0);
+			//putch(0xf4);
+			//putch(v1);			
+		}
 
 	}else if((state3 == SET_TIME) || (state3 == SET_TIME_DOWNCNT)){
-		if( varled.timeLED[0] || varled.timeLED[1] || varled.timeLED[2] || varled.timeLED[3] )
+		if( varled.timeLED[0] || varled.timeLED[1] || varled.timeLED[2] || varled.timeLED[3] ){
 			ret = 1;
+			v0 = getDec2Hex(varled.timeLED[0],varled.timeLED[1],0);
+			v1 = getDec2Hex(varled.timeLED[2],varled.timeLED[3],0);
+
+			if( state3 == SET_TIME ){
+				varled.timeValue[0] = v0;
+				varled.timeValue[1] = v1;
+			}else{
+				varled.timeCnt[0]	= v0;	
+				varled.timeCnt[1] 	= v1;
+			}
+
+			//putch(0xf5);
+			//putch(varled.timeValue[0]);
+			//putch(0xf6);
+			//putch(varled.timeValue[1]);				
+		}
 	}
 	return ret;
 }
-
 void app_set_mode_display(uns8 key){
 	uns8 keychange=0;
 	uns8 keypos=0;
@@ -293,28 +308,7 @@ void app_set_mode_display(uns8 key){
 	if(state3_1 != state3) {
 	//mode change
 		state3_1 = state3;		
-		set_init_varled();
-
-		if(state3 == SET_PITCH){
-			varled.pitchLED[0] = 0;
-			varled.pitchLED[1] = 0;
-			varled.pitchLED[2] = 0;
-			varled.pitchKeyPos = 0;
-
-		}else if(state3 == SET_SCORE){
-			varled.scoreLED[0] = 0;
-			varled.scoreLED[1] = 0;
-			varled.scoreLED[2] = 0;			
-			varled.scoreKeyPos = 0;
-
-		}else if((state3 == SET_TIME) || (state3 == SET_TIME_DOWNCNT)){
-			varled.timeLED[0] = 0;
-			varled.timeLED[1] = 0;
-			varled.timeLED[2] = 0;
-			varled.timeLED[3] = 0;
-			varled.timeKeyPos = 0;
-			varled.dpLED[1] = NUM2_DP;
-		}
+		init_varled();
 	}
 	
 	varled.percentLED[0] = state3;
@@ -355,33 +349,21 @@ void init_display(void){
 	send_sci();
 }
 
-void time_task(void){
-	//50ms
-	if(timeout3){
-		startTimer3(50);
-	}
-
-	//1S
-	if(timeout2){
-		startTimer2(Delay_1000MS);
-	}	
-}
-
 void app_set_time_task(void){
 	uns8 val;
 
 	//0.3S
 	if(timeout4 ){
 		startTimer4(Delay_300MS);
-		if(varled.light.b.en == 1){
-			if(varled.light.b.light == 0){
+		if(varled.st.b.light_en == 1){
+			if(varled.st.b.light == 0){
 				val = clearByLight();
 				varLED2display();
 				restoreByLight(val);
-				varled.light.b.light = 1;
+				varled.st.b.light = 1;
 			}else{
 				varLED2display();
-				varled.light.b.light = 0;
+				varled.st.b.light = 0;
 			}
 		}else{
 			varLED2display();
@@ -417,6 +399,199 @@ void fsm3(uns8 key){
 	}
 }
 
+void timeCountUp(void){
+	varled.timeCnt[0]++;
+	if(varled.timeCnt[0] == 60){
+		varled.timeCnt[0] = 0;
+		varled.timeCnt[1]++;
+	}
+}
+void timeCountDown(void){
+	if(varled.timeCnt[0] == 0){
+		varled.timeCnt[0] = 59;
+
+		if(varled.timeCnt[1] > 0)
+			varled.timeCnt[1]--;
+	}else{
+		varled.timeCnt[0]--;
+	}
+}
+void pitchCount(void){
+	if(cntPitchSensor){
+		cntPitchSensor = 0;
+		varled.pitchCnt++;
+	}
+}
+void scoreCount(void){
+	if(cntScoreSensor){
+		cntScoreSensor = 0;
+		varled.scoreCnt++;
+	}
+}
+
+uns8 get_percent_value(void){
+	uns8 ret=0;
+	uns16 v=0;
+	uns8 cnt=100;
+	uns16 subV = varled.pitchCnt;
+
+	// v = varled.scoreCnt x 100;
+	while(cnt){
+		--cnt;
+		v += varled.scoreCnt;
+	}
+
+	// ret = v / varled.pitchCnt;
+	while(v){
+		if(v >= varled.pitchCnt){
+			v -= varled.pitchCnt;
+			ret++;
+		}else
+		 	v = 0;
+	}
+
+	return ret;
+}
+
+void calPercentValue(void){
+
+	if( varled.scoreCnt == 0){
+		varled.percentValue = 0;
+
+	}else if( (varled.scoreCnt < varled.pitchCnt) && (varled.pitchCnt != 0) ){
+		varled.percentValue = get_percent_value();
+
+	}else if(varled.pitchCnt){
+		varled.percentValue = 0;
+	
+	}else if (varled.scoreCnt == varled.pitchCnt){
+		varled.percentValue = 99;
+
+	}else
+		varled.percentValue = 0;
+}
+void varLED2Update(void){
+
+	get16Hex2Vxx(varled.pitchCnt);
+	varled.pitchLED[2] = vxx[2];
+	varled.pitchLED[1] = vxx[1];
+	varled.pitchLED[0] = vxx[0];
+
+	get16Hex2Vxx(varled.scoreCnt);	
+	varled.scoreLED[2] = vxx[2];
+	varled.scoreLED[1] = vxx[1];
+	varled.scoreLED[0] = vxx[0];
+
+	if(varled.st.b.app_run_finish == 1){
+		calPercentValue();
+		get16Hex2Vxx(varled.percentValue);
+		varled.percentLED[0] = vxx[0];
+		varled.percentLED[1] = vxx[1];
+	}else{
+		varled.percentLED[0] = NUM_CLEAR;
+		varled.percentLED[1] = NUM_CLEAR;
+	}
+
+	getHex2Vxx(varled.timeCnt[0]);
+	varled.timeLED[0] = vxx[0];
+	varled.timeLED[1] = vxx[1];
+
+	getHex2Vxx(varled.timeCnt[1]);
+	varled.timeLED[2] = vxx[0];
+	varled.timeLED[3] = vxx[1];	
+
+	varled.dpLED[1] = NUM2_DP;
+}
+
+void app_running_time_task(){
+	uns8 v0,v1;
+
+	//50ms
+	if(timeout3){
+		startTimer3(50);
+		pitchCount();
+		scoreCount();
+		if(state3 == SET_PITCH) {
+			if(varled.pitchCnt == varled.pitchValue)
+				varled.st.b.app_run_finish = 1;
+
+		}else if(state3 == SET_SCORE){
+			if(varled.scoreCnt == varled.scoreValue)
+				varled.st.b.app_run_finish = 1;	
+		}
+	}
+
+	//1S
+	if(timeout2){
+		startTimer2(Delay_1000MS);
+
+		if(state3 == SET_TIME_DOWNCNT){
+			timeCountDown();
+			if( (varled.timeCnt[0] == 0) && (varled.timeCnt[1] == 0) )
+				varled.st.b.app_run_finish = 1;
+
+		}else if( (state3 == SET_TIME) || (state3 == SET_PITCH) || (state3 == SET_SCORE)){
+			timeCountUp();
+			if(state3 == SET_TIME){
+				if( (varled.timeCnt[0] == varled.timeValue[0]) && (varled.timeCnt[1] == varled.timeValue[1]) )
+					varled.st.b.app_run_finish = 1;
+			}
+		}
+
+		varLED2Update();
+		varLED2display();
+
+		//v0 = varled.pitchValue & 0xff;
+		//v1 = (varled.pitchValue >> 8);
+		//putch(0xf1);
+		//putch(v0);
+		//putch(0xf2);
+		//putch(v1);
+		//v0 = varled.pitchCnt & 0xff;
+		//v1 = (varled.pitchCnt >> 8);
+		//putch(0xf3);
+		//putch(v0);
+		//putch(0xf4);
+		//putch(v1);
+	}else{
+		if(varled.st.b.app_run_finish == 1){
+
+			varLED2Update();
+			varLED2display();
+		}
+	}
+
+	//0.3S
+	//if(timeout4 ){
+	//	startTimer4(Delay_300MS);
+	//}	
+}
+
+void app_run(void){
+	app_running_time_task();
+}
+
+
+void app_set_other_mode_clear(void){
+
+	if(state3 == SET_PITCH){ 
+		varled.scoreCnt = 0;
+		varled.timeCnt[0] = 0;
+		varled.timeCnt[1] = 0;
+
+	}else if(state3 == SET_SCORE){
+		varled.pitchCnt = 0;
+		varled.timeCnt[0] = 0;
+		varled.timeCnt[1] = 0;
+		
+	}else if( (state3 == SET_TIME) || (state3 == SET_TIME_DOWNCNT) ){
+		varled.scoreCnt = 0;
+		varled.pitchCnt = 0;
+		varled.timeCnt[0] = varled.timeValue[0];
+		varled.timeCnt[1] = varled.timeValue[1];
+	}
+}
+
 void fsm2( void)
 {
 	uns8 key,finish;
@@ -432,7 +607,16 @@ void fsm2( void)
 		case APP_SET:
 			key = get_keyvalue();		
 			finish = 0;
-			if( (Key3S==1) && (keyState == 1) && (keyValue == KEY_SET) ){
+
+			if( varled.st.b.app_run_finish == 1){
+				varled.st.b.app_run_finish = 0;
+				app_set_other_mode_clear();
+				varLED2Update();
+				varled.percentLED[0] = state3;
+				varled.percentLED[1] = NUM_CLEAR;
+				varLED2display();
+
+			}else if( (Key3S==1) && (keyState == 1) && (keyValue == KEY_SET) ){
 				finish = checkSetFinish();
 
 				if(finish){
@@ -453,14 +637,38 @@ void fsm2( void)
 			if( (key == KEY_SET) && (Key3S==0)){
 				state2 = APP_SET;
 			}else if( key == KEY_START){
-				state2 = APP_START;
+				state2 = APP_RUN;
 			}
 			break;
 
-		case APP_START:
+		case APP_RUN:
+			app_run();
+			
+			key = get_keyvalue();
+			finish = varled.st.b.app_run_finish;
+
+			if( finish == 1 ){
+				state2 = APP_FINISH;
+			}else if( key == KEY_START){
+				state2 = APP_PAUSE;
+			}
+		
 			break;
 
-		case APP_STOP:
+		case APP_PAUSE:
+			key = get_keyvalue();
+			if( key == KEY_START){
+				state2 = APP_RUN;
+			}else if( key == KEY_SET){
+				state2 = APP_SET;
+			}		
+			break;
+
+		case APP_FINISH:
+			key = get_keyvalue();
+			if( key == KEY_SET){
+				state2 = APP_SET;
+			}		
 			break;
 	}
 }
@@ -481,4 +689,44 @@ void getHex2Vxx(uns8 v){
 	}
 
 	vxx[0] = v;
+}
+
+void get16Hex2Vxx(uns16 v){
+	vxx[2]=0;
+	vxx[1]=0;
+	vxx[0]=0;
+
+	while(v >= 1000){
+		v-=1000;
+	}
+
+	while(v >= 100){
+		v -=100;
+		vxx[2]++;
+	}
+
+	while(v >= 10){
+		v -=10;
+		vxx[1]++;
+	}
+
+	vxx[0] = v;
+}
+
+uns16 getDec2Hex(uns8 v0, uns8 v10, uns8 v100){
+	uns16 v=0;
+
+	if(v0) v += v0;
+
+	while(v10){
+		v10--;
+		v += 10;
+	}
+
+	while(v100){
+		v100--;
+		v += 100;
+	}
+
+	return v;
 }
