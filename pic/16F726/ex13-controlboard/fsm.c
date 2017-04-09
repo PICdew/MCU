@@ -454,21 +454,25 @@ uns8 get_percent_value(void){
 }
 
 void calPercentValue(void){
+	uns8 cal=0;
 
-	if( varled.scoreCnt == 0){
+	if(varled.pitchCnt != 0){
+		if(varled.scoreCnt == 0){
+			varled.percentValue = 0;
+		}else{
+			cal = 1;
+		}
+	}else{
 		varled.percentValue = 0;
+	}
 
-	}else if( (varled.scoreCnt < varled.pitchCnt) && (varled.pitchCnt != 0) ){
-		varled.percentValue = get_percent_value();
-
-	}else if(varled.pitchCnt){
-		varled.percentValue = 0;
-	
-	}else if (varled.scoreCnt == varled.pitchCnt){
-		varled.percentValue = 99;
-
-	}else
-		varled.percentValue = 0;
+	if(cal == 1){
+		if(varled.scoreCnt < varled.pitchCnt){
+			varled.percentValue = get_percent_value();
+		}else{
+			varled.percentValue = 99;
+		}
+	}
 }
 void varLED2Update(void){
 
@@ -649,7 +653,6 @@ void fsm2( void)
 
 		case APP_TAKE_BALL:
 				if(cntTakeBallSensor){
-					cntTakeBallSensor = 0;
 					cntScoreSensor = 0;
 					state2 = APP_RUN;
 				}
