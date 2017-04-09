@@ -60,8 +60,8 @@ typedef struct {
 /* key value */
 uns8 previousTMR0;
 uns8 subClock;
-uns8 timer1, timer2L, timer2H, timer3, timer4L, timer4H, timer5L, timer5H, timer6L, timer6H;
-bit timeout1, timeout2, timeout3, timeout4, timeout5, timeout6;  //timeout5 key3S
+uns8 timer1, timer2L, timer2H, timer3, timer4L, timer4H, timer5L, timer5H, timer6L, timer6H, timer7L, timer7H;
+bit timeout1, timeout2, timeout3, timeout4, timeout5, timeout6, timeout7;  //timeout5 key3S
 uns8 state1, state2, state3, state3_1;
 bit keyState;
 

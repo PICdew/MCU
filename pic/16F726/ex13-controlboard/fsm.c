@@ -8,6 +8,7 @@ enum { SET_PITCH=1, SET_SCORE=2, SET_TIME=3, SET_TIME_DOWNCNT=4 };
 
 #define Delay_100MS  (100)
 #define Delay_1000MS  (1000)
+#define Delay_3000MS  (3000)
 #define Delay_500MS  (500)
 #define Delay_300MS  (300)
 
@@ -29,6 +30,11 @@ enum { SET_PITCH=1, SET_SCORE=2, SET_TIME=3, SET_TIME_DOWNCNT=4 };
 	timer6L		= (c)%256;	\
 	timer6H		= (c)/256;	\
 	timeout6	= 0;
+
+#define startTimer7(c)		\
+	timer7L		= (c)%256;	\
+	timer7H		= (c)/256;	\
+	timeout7	= 0;
 
 void initapp(void){
 	startTimer2(Delay_100MS);
@@ -414,11 +420,13 @@ void pitchCount(void){
 		varled.pitchCnt++;
 	}
 }
-void scoreCount(void){
+uns8 scoreCount(void){
 	if(cntScoreSensor){
 		cntScoreSensor = 0;
 		varled.scoreCnt++;
+		return 1;
 	}
+	return 0;
 }
 
 uns8 get_percent_value(void){
@@ -492,16 +500,38 @@ void varLED2Update(void){
 }
 
 void app_running_time_task(){
-	uns8 v0,v1;
+	uns8 v0,v1,getScore;
+
+	//3S
+	if(state3 == SET_PITCH){
+		if( (varled.pitchCnt == varled.pitchValue)  && timeout7 ){
+				varled.st.b.app_run_finish = 1;
+				return;
+		}
+	}
 
 	//300ms
 	if(timeout6){
+		getScore = 0;
 		startTimer6(Delay_300MS);
-		pitchCount();
-		scoreCount();
+
+		if(state3 != SET_PITCH) 
+			pitchCount();
+
+		getScore=scoreCount();
+
 		if(state3 == SET_PITCH) {
-			if(varled.pitchCnt == varled.pitchValue)
-				varled.st.b.app_run_finish = 1;
+			if( varled.pitchCnt < varled.pitchValue ){
+				pitchCount();
+				if(varled.pitchCnt == varled.pitchValue){
+					startTimer7(Delay_3000MS);
+				}
+
+			}else{
+				if(getScore){
+					varled.st.b.app_run_finish = 1;
+				}
+			}
 
 		}else if(state3 == SET_SCORE){
 			if(varled.scoreCnt == varled.scoreValue)
@@ -548,11 +578,6 @@ void app_running_time_task(){
 			varLED2display();
 		}
 	}
-
-	//0.3S
-	//if(timeout4 ){
-	//	startTimer4(Delay_300MS);
-	//}	
 }
 
 void app_run(void){

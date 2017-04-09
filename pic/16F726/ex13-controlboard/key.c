@@ -31,6 +31,7 @@ void initkey(void){
     timeout3    = 1;
     timeout4    = 1;
     timeout6    = 1;
+    timeout7    = 1;  //only for running ,at PITCH_MODE check end
 	keyState	= 0;
 	keyEvent 	= 0;
 	state1  	= OPEN;
@@ -108,6 +109,13 @@ void timerTick()
 			if(--timer6L == 255){
 				if(--timer6H == 255)
 					timeout6 = 1;
+			}
+		}
+
+		if(!timeout7){
+			if(--timer7L == 255){
+				if(--timer7H == 255)
+					timeout7 = 1;
 			}
 		}
 	}
