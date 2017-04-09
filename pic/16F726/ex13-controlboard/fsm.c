@@ -609,6 +609,20 @@ void app_set_other_mode_clear(void){
 	}
 }
 
+void init_mode_value(uns8 mode){
+
+	if(state3 == SET_PITCH){
+		varled.pitchCnt = varled.pitchValue;
+
+	}else if( state3 == SET_SCORE ){
+		varled.scoreCnt = varled.scoreValue;
+
+	}else if( (state3 == SET_TIME) || (state3 == SET_TIME_DOWNCNT) ){
+		varled.timeCnt[0] = varled.timeValue[0]; 
+		varled.timeCnt[1] = varled.timeValue[1];
+
+	}
+}
 void fsm2( void)
 {
 	uns8 key,finish;
@@ -626,8 +640,10 @@ void fsm2( void)
 			finish = 0;
 
 			if( varled.st.b.app_run_finish == 1){
+
 				varled.st.b.app_run_finish = 0;
 				app_set_other_mode_clear();
+				init_mode_value(state3);
 				varLED2Update();
 				varled.percentLED[0] = state3;
 				varled.percentLED[1] = NUM_CLEAR;
@@ -666,6 +682,11 @@ void fsm2( void)
 
 			if( finish == 1 ){
 				state2 = APP_FINISH;
+			
+			}else if( (Key3S==1) && (key == KEY_START) ){
+				varled.st.b.app_run_finish = 1;
+				state2 = APP_SET;
+
 			}else if( key == KEY_START){
 				state2 = APP_PAUSE;
 			}
@@ -676,6 +697,8 @@ void fsm2( void)
 			key = get_keyvalue();
 			if( key == KEY_START){
 				state2 = APP_RUN;
+				cntScoreSensor = 0;
+
 			}else if( key == KEY_SET){
 				state2 = APP_SET;
 			}		

@@ -18,7 +18,7 @@ enum { K_START_BIT = 0b.0000.0001,
 	timer1 		= c;		\
 	timeout1	= 0;
 
-#define DEF_3S  (2000)
+#define DEF_2S  (1500)
 #define startTimer5(c)		\
 	timer5L		= (c)%256;	\
 	timer5H		= (c)/256;	\
@@ -141,7 +141,7 @@ void fsm1(){
 				Key3S = 0;
 				keyState = 1;
 				state1 = PRESSED;				
-				startTimer5(DEF_3S);
+				startTimer5(DEF_2S);
 			}
 			break;
 		
@@ -149,9 +149,9 @@ void fsm1(){
 			if(key != keyValue){
 				startTimer1(50);
 				state1 = OPENING;
-			}else{
-				if(timeout5)
-					Key3S = 1;
+			}
+			if(timeout5){
+				Key3S = 1;
 			}
 			break;
 
