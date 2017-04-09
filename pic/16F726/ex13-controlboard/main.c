@@ -72,10 +72,10 @@ uns8 keyEventValue;
 uns8 LEDCnt;
 uns8 LED2Value;
 
-bit bitScoreSensor, bitPitchSensor;
+bit bitScoreSensor, bitTakeBallSensor;
 
 uns8	cntScoreSensor;
-uns8 	cntPitchSensor;
+uns8 	cntTakeBallSensor;
 bit    	portb4_0;
 bit    	portb4_1;
 bit    	portb5_0;
@@ -113,9 +113,9 @@ interrupt int_server(void)
 		if( (portb4_1==1) && (portb4_0==0) )
 			cntScoreSensor++;
 
-		//RB5 falling
-		if( (portb5_1==1) && (portb5_0==0) )
-			cntPitchSensor++;
+		//RB5 rising 0->1
+		if( (portb5_1==0) && (portb5_0==1) )
+			cntTakeBallSensor++;
 
 		portb4_1 = portb4_0;
 		portb5_1 = portb5_0;
@@ -242,10 +242,10 @@ void main( void)
 	init_varled();	
 
 	bitScoreSensor = 0;
-	bitPitchSensor = 0;
+	bitTakeBallSensor = 0;
 
 	cntScoreSensor = 0;
-	cntPitchSensor = 0;
+	cntTakeBallSensor = 0;
 	portb4_0 = 1;
 	portb4_1 = 1;
 	portb5_0 = 1;

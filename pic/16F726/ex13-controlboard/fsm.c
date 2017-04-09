@@ -43,12 +43,12 @@ void getSensor(void){
 	uns8 i,j;
 
 	i = cntScoreSensor;
-	j = cntPitchSensor;
+	j = cntTakeBallSensor;
 	cntScoreSensor = 0;
-	cntPitchSensor = 0;
+	cntTakeBallSensor = 0;
 
 	if(i) bitScoreSensor = 1;
-	if(j) bitPitchSensor = 1; 
+	if(j) bitTakeBallSensor = 1; 
 }
 
 uns8 get_keyvalue(void){
@@ -417,8 +417,8 @@ void timeCountDown(void){
 	}
 }
 void pitchCount(void){
-	if(cntPitchSensor){
-		cntPitchSensor = 0;
+	if(cntTakeBallSensor){
+		cntTakeBallSensor = 0;
 		varled.pitchCnt++;
 	}
 }
