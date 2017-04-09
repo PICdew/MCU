@@ -474,15 +474,11 @@ void varLED2Update(void){
 	varled.scoreLED[1] = vxx[1];
 	varled.scoreLED[0] = vxx[0];
 
-	if(varled.st.b.app_run_finish == 1){
-		calPercentValue();
-		get16Hex2Vxx(varled.percentValue);
-		varled.percentLED[0] = vxx[0];
-		varled.percentLED[1] = vxx[1];
-	}else{
-		varled.percentLED[0] = NUM_CLEAR;
-		varled.percentLED[1] = NUM_CLEAR;
-	}
+
+	calPercentValue();
+	get16Hex2Vxx(varled.percentValue);
+	varled.percentLED[0] = vxx[0];
+	varled.percentLED[1] = vxx[1];
 
 	getHex2Vxx(varled.timeCnt[0]);
 	varled.timeLED[0] = vxx[0];
