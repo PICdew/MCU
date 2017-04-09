@@ -30,6 +30,7 @@ void initkey(void){
     timeout2 	= 1;
     timeout3    = 1;
     timeout4    = 1;
+    timeout6    = 1;
 	keyState	= 0;
 	keyEvent 	= 0;
 	state1  	= OPEN;
@@ -101,7 +102,14 @@ void timerTick()
 				if(--timer5H == 255)
 					timeout5 = 1;
 			}
-		}		
+		}
+
+		if(!timeout6){
+			if(--timer6L == 255){
+				if(--timer6H == 255)
+					timeout6 = 1;
+			}
+		}
 	}
 }
 

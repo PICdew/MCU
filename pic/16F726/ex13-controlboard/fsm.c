@@ -25,6 +25,10 @@ enum { SET_PITCH=1, SET_SCORE=2, SET_TIME=3, SET_TIME_DOWNCNT=4 };
 	timer4H		= (c)/256;	\
 	timeout4	= 0;	
 
+#define startTimer6(c)		\
+	timer6L		= (c)%256;	\
+	timer6H		= (c)/256;	\
+	timeout6	= 0;
 
 void initapp(void){
 	startTimer2(Delay_100MS);
@@ -38,18 +42,6 @@ void getHex2Vxx(uns8 v);
 void get16Hex2Vxx(uns16 v);
 uns16 getDec2Hex(uns8 v0, uns8 v10, uns8 v100);
 void varLED2Update(void);
-
-void getSensor(void){
-	uns8 i,j;
-
-	i = cntScoreSensor;
-	j = cntTakeBallSensor;
-	cntScoreSensor = 0;
-	cntTakeBallSensor = 0;
-
-	if(i) bitScoreSensor = 1;
-	if(j) bitTakeBallSensor = 1; 
-}
 
 uns8 get_keyvalue(void){
 	uns8 key = 0;
@@ -506,9 +498,9 @@ void varLED2Update(void){
 void app_running_time_task(){
 	uns8 v0,v1;
 
-	//50ms
-	if(timeout3){
-		startTimer3(50);
+	//300ms
+	if(timeout6){
+		startTimer6(Delay_300MS);
 		pitchCount();
 		scoreCount();
 		if(state3 == SET_PITCH) {
