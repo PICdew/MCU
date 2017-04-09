@@ -616,11 +616,13 @@ void fsm2( void)
 				varled.percentLED[1] = NUM_CLEAR;
 				varLED2display();
 
-			}else if( (Key3S==1) && (keyState == 1) && (keyValue == KEY_SET) ){
+			}else if( key == KEY_START ){
 				finish = checkSetFinish();
 
 				if(finish){
-					state2 = APP_SET_FINISH;
+					state2 = APP_RUN;
+					cntScoreSensor = 0;
+					cntTakeBallSensor = 0;
 					varLED2display();
 				}
 			}else if(key){
