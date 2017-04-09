@@ -3,7 +3,7 @@
  APP STATE MACHINES
 */
 
-enum { APP_BOOTING=2, APP_ENTRY=3, APP_SET=4, APP_SET_FINISH=5, APP_RUN=6, APP_PAUSE=7, APP_FINISH=8};
+enum { APP_BOOTING=2, APP_ENTRY=3, APP_SET=4, APP_RUN=5, APP_PAUSE=6, APP_FINISH=7};
 enum { SET_PITCH=1, SET_SCORE=2, SET_TIME=3, SET_TIME_DOWNCNT=4 };
 
 #define Delay_100MS  (100)
@@ -645,15 +645,6 @@ void fsm2( void)
 
 			if( finish == 0)
 				app_set_time_task();
-			break;
-
-		case APP_SET_FINISH:
-			key = get_keyvalue();
-			if( (key == KEY_SET) && (Key3S==0)){
-				state2 = APP_SET;
-			}else if( key == KEY_START){
-				state2 = APP_RUN;
-			}
 			break;
 
 		case APP_RUN:
