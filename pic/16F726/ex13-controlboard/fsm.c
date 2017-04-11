@@ -112,6 +112,28 @@ void varLED2display(void){
 	send_sci();
 }
 
+void varLED2displayOff(void){
+	cmddata.cmd = CHIP1NUM;
+	cmddata.n[0] = NUM_CLEAR;
+	cmddata.n[1] = NUM_CLEAR;
+	cmddata.n[2] = NUM_CLEAR;
+	cmddata.n[3] = NUM_CLEAR;	
+	cmddata.n[4] = NUM_CLEAR;
+	cmddata.n[5] = NUM_CLEAR;
+	cmddata.n[6] = NUM_CLEAR;
+	cmddata.n[7] = NUM_CLEAR;
+	cmddata.dp   = 0;
+	send_sci();
+
+	cmddata.cmd = CHIP2NUM;
+	cmddata.n[0] = NUM_CLEAR;
+	cmddata.n[1] = NUM_CLEAR;
+	cmddata.n[2] = NUM_CLEAR;
+	cmddata.n[3] = NUM_CLEAR;	
+	cmddata.dp   = 0;	
+	send_sci();
+}
+
 void init_varled(void){
 	varled.pitchLED[0] = 0;
 	varled.pitchLED[1] = 0;
@@ -368,6 +390,24 @@ void app_set_time_task(void){
 		}
 	}		
 }
+
+void app_pause_time_task(void){
+	uns8 val;
+
+	//0.3S
+	if(timeout4 ){
+		startTimer4(Delay_300MS);
+		if(varled.st.b.light == 0){
+			varLED2displayOff();
+			varled.st.b.light = 1;
+		}else{
+			varLED2display();
+			varled.st.b.light = 0;
+		}
+	}		
+}
+
+
 
 void fsm3(uns8 key){
 	switch(state3){
@@ -694,6 +734,7 @@ void fsm2( void)
 			break;
 
 		case APP_PAUSE:
+			app_pause_time_task();
 			key = get_keyvalue();
 			if( key == KEY_START){
 				state2 = APP_RUN;
