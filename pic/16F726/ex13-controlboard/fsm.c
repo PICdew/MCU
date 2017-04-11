@@ -700,6 +700,7 @@ void fsm2( void)
 				cntScoreSensor = 0;
 
 			}else if( key == KEY_SET){
+				varled.st.b.app_run_finish = 1;
 				state2 = APP_SET;
 			}		
 			break;
