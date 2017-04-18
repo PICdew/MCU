@@ -109,9 +109,9 @@ avrdude done.  Thank you.
 -----------------------
  ## 其它參考
 
- [AVR Tutorials][7]
- [Getting Started - AVR Microcontrollers][8]
- [Tools and Software ATmega328P][9]
+ * [AVR Tutorials][7]
+ * [Getting Started - AVR Microcontrollers][8]
+ * [Tools and Software ATmega328P][9]
 
 
 [1]:http://sourceforge.net/projects/winavr/
