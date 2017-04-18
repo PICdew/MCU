@@ -109,7 +109,17 @@ avrdude done.  Thank you.
 
 ## 7688Duo
 
-目前確定無法燒錄
+* 目前確定無法燒錄，改使用OpenWrt燒錄正常
+* [Software and Tools]
+    * OpenWrt SDK for C/C++ for Linux
+    * C/C++ Toolchain for Linux
+* [Beginners' Guide to OpenWrt][23]
+* [Tutorials][24]
+* [此處收集LinkIt Smart 7688相關][26]
+    * [LinkIt Smart 7688 and MCS][27]
+    * [LASS - Linkit Smart 7688 Duo][28]
+
+
 
 ### t1-led
 
@@ -129,13 +139,46 @@ avrdude -C../LinkIt/hardware/avr/0.1.5/avrdude.conf -cavr109 -P/dev/ttyACM1 -b57
 Connecting to programmer: .avrdude: butterfly_recv(): programmer is not responding
 ```
 
-## 改由OpenWrt燒錄正常
+### 改由OpenWrt燒錄正常
 
 ```
 avrdude -p m32u4 -c linuxgpio -v -e -U flash:w:main.hex -U lock:w:0x0f:m
 ```
 
 來源：[Linkit Smart7688 Duo Arduino Bootloader 解磚 ][20]
+
+
+### 7688
+
+![7688](http://i.imgur.com/03tnDTP.png)
+
+![7688 Power](http://i.imgur.com/lANndOA.png)
+
+* USB Host
+    * 接頭為Micro-AB
+    * 接直接接到SOC的USB_DP/USB_DM
+    * 提供5V_USB
+
+* USB Power
+    * 接頭為Micro-B
+    * 接直接到MCU的D-/D+
+    * 提供5V_USB
+
+一般只接USB_Power提供5V_USB，經XC6220B331P(1A LDO Voltage)產生3.3V
+若電源不足記得再接USB Host來供電
+
+
+Power Consumption
+
+![Power Consumption](http://i.imgur.com/ysmXuMd.png)
+
+### 7688 Duo Pin
+
+![Pin](http://i.imgur.com/zk9yg20.png)
+
+### Build Code
+
+* [Using OpenWrt SDK to Build C/C++ Programs][25]
 
 
 
@@ -174,3 +217,10 @@ avrdude -p m32u4 -c linuxgpio -v -e -U flash:w:main.hex -U lock:w:0x0f:m
 [19]:http://blog.cavedu.com/%E7%89%A9%E8%81%AF%E7%B6%B2/linkit/linkit-smart-7688-duo-%E4%B9%8B-arduino-com%E5%9F%A0%E9%96%83%E9%80%80%E7%AF%87/
 [20]:http://storychen.blogspot.tw/2016/12/linkit-smart7688-duo-arduino-bootloader.html
 [21]:https://docs.labs.mediatek.com/resource/linkit-smart-7688/en/tutorials/linkit-smart-7688-duo/linkit-smart-7688-duo-development-board-and-arduino-ide/updating-arduino-bootloader
+[22]:https://docs.labs.mediatek.com/resource/linkit-smart-7688/en/downloads
+[23]:http://wiki.openwrt.org/doc/howto/user.beginner
+[24]:https://docs.labs.mediatek.com/resource/linkit-smart-7688/en/tutorials
+[25]:https://docs.labs.mediatek.com/resource/linkit-smart-7688/en/tutorials/c-c++-programming/using-openwrt-sdk-to-build-c-c++-programs
+[26]:https://mediatek-labs.gitbooks.io/linkit-smart-7688/content/resources-cht.html
+[27]:https://mcs.mediatek.com/7688/
+[28]:https://hackpad.com/LASS-Linkit-Smart-7688-Duo-1HcedS5HQnI
