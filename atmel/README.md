@@ -105,6 +105,29 @@ avrdude done.  Thank you.
 * [USBasp Firmware~串口燒燒燒][17]
 * [How to Update the Firmware on a USBasp V2.0][18]
 
+-------------------
+
+## 7688Duo
+
+目前確定無法燒錄
+
+### t1-led
+
+```
+xx/test1-led on master [?]
+$ sudo make flash                                                                                                                                                                        
+avrdude -cavr109 -P/dev/ttyACM1 -b57600 -p atmega32u4 -U flash:w:main.hex:i
+
+Connecting to programmer: .avrdude: butterfly_recv(): programmer is not responding
+```
+
+### t2-led
+
+```
+avrdude -C../LinkIt/hardware/avr/0.1.5/avrdude.conf -cavr109 -P/dev/ttyACM1 -b57600 -p atmega32u4 -U flash:w:main.hex:i
+
+Connecting to programmer: .avrdude: butterfly_recv(): programmer is not responding
+```
 
 -----------------------
  ## 其它參考
