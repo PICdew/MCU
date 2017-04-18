@@ -133,6 +133,7 @@ Connecting to programmer: .avrdude: butterfly_recv(): programmer is not respondi
 
 * [LinkIt Smart 7688 Duo 之 Arduino COM埠閃退篇][19]
 * [Linkit Smart7688 Duo Arduino Bootloader 解磚 ][20]
+* [Using AVRDUDE from OpenWrt SDK][21]
 
 -----------------------
  ## 其它參考
@@ -162,3 +163,4 @@ Connecting to programmer: .avrdude: butterfly_recv(): programmer is not respondi
 [18]:http://blog.lincomatic.com/?p=1480
 [19]:http://blog.cavedu.com/%E7%89%A9%E8%81%AF%E7%B6%B2/linkit/linkit-smart-7688-duo-%E4%B9%8B-arduino-com%E5%9F%A0%E9%96%83%E9%80%80%E7%AF%87/
 [20]:http://storychen.blogspot.tw/2016/12/linkit-smart7688-duo-arduino-bootloader.html
+[21]:https://docs.labs.mediatek.com/resource/linkit-smart-7688/en/tutorials/linkit-smart-7688-duo/linkit-smart-7688-duo-development-board-and-arduino-ide/updating-arduino-bootloader
