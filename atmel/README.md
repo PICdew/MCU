@@ -129,6 +129,10 @@ avrdude -C../LinkIt/hardware/avr/0.1.5/avrdude.conf -cavr109 -P/dev/ttyACM1 -b57
 Connecting to programmer: .avrdude: butterfly_recv(): programmer is not responding
 ```
 
+### 其它參考
+
+* [LinkIt Smart 7688 Duo 之 Arduino COM埠閃退篇][19]
+
 -----------------------
  ## 其它參考
 
@@ -155,3 +159,4 @@ Connecting to programmer: .avrdude: butterfly_recv(): programmer is not respondi
 [16]:http://forum.arduino.cc/index.php?topic=90581.0
 [17]:https://dotblogs.com.tw/aliceyeh/2015/01/05/147946
 [18]:http://blog.lincomatic.com/?p=1480
+[19]:http://blog.cavedu.com/%E7%89%A9%E8%81%AF%E7%B6%B2/linkit/linkit-smart-7688-duo-%E4%B9%8B-arduino-com%E5%9F%A0%E9%96%83%E9%80%80%E7%AF%87/
