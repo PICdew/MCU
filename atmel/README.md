@@ -129,6 +129,16 @@ avrdude -C../LinkIt/hardware/avr/0.1.5/avrdude.conf -cavr109 -P/dev/ttyACM1 -b57
 Connecting to programmer: .avrdude: butterfly_recv(): programmer is not responding
 ```
 
+## 改由OpenWrt燒錄正常
+
+```
+avrdude -p m32u4 -c linuxgpio -v -e -U flash:w:main.hex -U lock:w:0x0f:m
+```
+
+來源：[Linkit Smart7688 Duo Arduino Bootloader 解磚 ][20]
+
+
+
 ### 其它參考
 
 * [LinkIt Smart 7688 Duo 之 Arduino COM埠閃退篇][19]
