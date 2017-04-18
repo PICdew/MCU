@@ -38,6 +38,75 @@ attiny85/test1-led： [Getting started with ATtiny85 (AVR Programming)][6]
 
  [CrossPack-AVR][4]
 
+--------------------------
+
+## Ubuntu 開發環境建立
+
+### toolchain
+
+#### Required Tools
+* avr-gcc
+    * [Install avr-libc][12]
+     gcc version 4.9.2 (GCC)
+
+
+#### Optional Tools
+* AVRDUDE
+    * AVRDUDE is software for programming Atmel AVR Microcontrollers.
+    * [How to Install AVRDude 6.3][10]
+    * [AVR Downloader/UploaDEr][11]
+    avrdude version 6.3, URL: <http://savannah.nongnu.org/projects/avrdude/>
+
+-------------------
+
+## USBasp
+
+[Using USBTinyISP to program ATTiny45 and ATTiny85][13]
+
+
+### 設定udev，讓avrdude不需要使用sudo
+
+```
+erwin@erwin-pc150: /etc/udev/rules.d
+$ ls
+10-usbasp.rules  70-persistent-net.rules  README
+erwin@erwin-pc150: /etc/udev/rules.d
+$ cat 10-usbasp.rules 
+SUBSYSTEM=="usb", SYSFS{idVendor}=="16c0", SYSFS{idProduct}=="05dc", GROUP="adm", MODE="0666"
+```
+
+* 記得動啟才會套用設定檔
+sudo restart udev
+
+
+來源：
+* [avrisp mk II Rechteproblem][14]
+* [Run avrdude on Ubuntu without root][15]
+* [averdude requires sudo for USBasp - a fix][16]
+
+
+### USBasp測試
+
+* 需要更新USBasp軟体
+```
+$ sudo avrdude -c USBasp  -p attiny85 -U flash:w:main.hex:i                                                                                                                              
+
+avrdude: warning: cannot set sck period. please check for usbasp firmware update.
+avrdude: error: program enable: target doesn't answer. 1 
+avrdude: initialization failed, rc=-1
+         Double check connections and try again, or use -F to override
+         this check.
+
+
+avrdude done.  Thank you.
+```
+
+來源：
+* [USBasp Firmware~串口燒燒燒][17]
+* [How to Update the Firmware on a USBasp V2.0][18]
+
+
+-----------------------
  ## 其它參考
 
  [AVR Tutorials][7]
@@ -54,3 +123,12 @@ attiny85/test1-led： [Getting started with ATtiny85 (AVR Programming)][6]
 [7]:http://www.avr-tutorials.com
 [8]:http://www.atmel.com/products/microcontrollers/avr/start_now.aspx
 [9]:http://www.atmel.com/devices/atmega328p.aspx?tab=tools
+[10]:http://ubuntuhandbook.org/index.php/2017/01/install-avrdude-6-4-ubuntu-16-04/
+[11]:http://savannah.nongnu.org/projects/avrdude/
+[12]:https://www.howtoinstall.co/en/ubuntu/xenial/avr-libc
+[13]:http://www.arvydas.co.uk/2012/09/using-usbtinyisp-to-program-attiny45-and-attiny85/
+[14]:https://forum.ubuntuusers.de/topic/arduino-avrisp-mk-ii-rechteproblem/
+[15]:http://mightyohm.com/blog/2010/03/run-avrdude-without-root-privs-in-ubuntu/
+[16]:http://forum.arduino.cc/index.php?topic=90581.0
+[17]:https://dotblogs.com.tw/aliceyeh/2015/01/05/147946
+[18]:http://blog.lincomatic.com/?p=1480
