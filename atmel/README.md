@@ -172,6 +172,40 @@ Power Consumption
 
 ![Power Consumption](http://i.imgur.com/ysmXuMd.png)
 
+### 燒錄 MCU bootload
+
+* 當將USB Power插入電腦USB Port若未出現(/dev/ttyACM0)，此時需要燒錄bootload如下(使用OpenWrt內建的程式)
+```
+avrdude -c linuxgpio -C /etc/avrdude.conf -p m32u4 -v -e -U flash:w:/etc/arduino/Caterina-smart7688.hex
+```
+
+* 參數說明
+```
+-c <programmer> 由於MCU的燒錄腳位都接到SOC，因此直接控制gpio即可燒錄程式
+-C <config-file> 設定相關配置
+-p <partnom> 指定device
+-v Verbose output
+-e Perform a chip erase
+-U <memtyp>:r|w|v:<filename>
+```
+
+* avrdude.conf內容如下
+```
+part
+    id               = "m32u4";
+    desc             = "ATmega32U4";
+    signature        = 0x1e 0x95 0x87;
+    usbpid           = 0x2ff4;
+...
+
+    memory "flash"
+        paged           = yes;
+        size            = 32768;
+        page_size       = 128;
+        num_pages       = 256;
+        min_write_delay = 4500;
+```
+
 ### 7688 Duo Pin
 
 ![Pin](http://i.imgur.com/zk9yg20.png)
