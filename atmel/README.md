@@ -110,7 +110,7 @@ avrdude done.  Thank you.
 ## 7688Duo
 
 * 目前確定無法燒錄，改使用OpenWrt燒錄正常
-* [Software and Tools]
+* [Software and Tools][29]
     * OpenWrt SDK for C/C++ for Linux
     * C/C++ Toolchain for Linux
 * [Beginners' Guide to OpenWrt][23]
@@ -221,6 +221,7 @@ Power Consumption
 [23]:http://wiki.openwrt.org/doc/howto/user.beginner
 [24]:https://docs.labs.mediatek.com/resource/linkit-smart-7688/en/tutorials
 [25]:https://docs.labs.mediatek.com/resource/linkit-smart-7688/en/tutorials/c-c++-programming/using-openwrt-sdk-to-build-c-c++-programs
-[26]:https://mediatek-labs.gitbooks.io/linkit-smart-7688/content/resources-cht.html
+[26]:https://mediatek-labs.gitbooks.io/linkit-smart-7688/content/
 [27]:https://mcs.mediatek.com/7688/
 [28]:https://hackpad.com/LASS-Linkit-Smart-7688-Duo-1HcedS5HQnI
+[29]:https://docs.labs.mediatek.com/resource/linkit-smart-7688/en/downloads
