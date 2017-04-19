@@ -2,6 +2,7 @@ import serial
 import time
 
 s = None
+line = None
 
 def setup():
     global s
@@ -20,6 +21,8 @@ def loop():
     time.sleep(1)
     s.write("2")
     time.sleep(1)
+    line = s.readline()
+    print line
 
 if __name__ == '__main__':
     setup()
