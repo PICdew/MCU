@@ -156,12 +156,12 @@ avrdude -p m32u4 -c linuxgpio -v -e -U flash:w:main.hex -U lock:w:0x0f:m
 
 * USB Host
     * 接頭為Micro-AB
-    * 接直接接到SOC的USB_DP/USB_DM
+    * 直接接到SOC的USB_DP/USB_DM
     * 提供5V_USB
 
 * USB Power
     * 接頭為Micro-B
-    * 接直接到MCU的D-/D+
+    * 直接到MCU的D-/D+
     * 提供5V_USB
 
 一般只接USB_Power提供5V_USB，經XC6220B331P(1A LDO Voltage)產生3.3V
