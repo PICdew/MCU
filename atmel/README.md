@@ -206,6 +206,10 @@ part
         min_write_delay = 4500;
 ```
 
+來源：
+* [Update Arduino Bootloader][30]
+* [EduBot][31]
+
 ### 7688 Duo Pin
 
 ![Pin](http://i.imgur.com/zk9yg20.png)
@@ -259,3 +263,5 @@ part
 [27]:https://mcs.mediatek.com/7688/
 [28]:https://hackpad.com/LASS-Linkit-Smart-7688-Duo-1HcedS5HQnI
 [29]:https://docs.labs.mediatek.com/resource/linkit-smart-7688/en/downloads
+[30]:https://mediatek-labs.gitbooks.io/linkit-smart-7688/content/duo-update-arduino-bootloader.html
+[31]:https://sites.google.com/a/fssh.khc.edu.tw/edumot/7688
