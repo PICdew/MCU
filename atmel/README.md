@@ -210,6 +210,37 @@ part
 * [Update Arduino Bootloader][30]
 * [EduBot][31]
 
+### 如何取得 arduino hex檔
+
+* 取得avrdude狀態
+使用ps -ef | grep avrdude
+```
+xx/avrdude -C/root/.arduino15/packages/LinkIt/hardware/avr/0.1.5/avrdude.conf -q -q -patmega32u4 -cavr109 -P/dev/ttyACM0 -b57600 -D -Uflash:w:/tmp/build2842119949771062043.tmp/smart7688-t1.cpp.hex:i
+```
+
+* 產生hex，用到相關檔案
+內有CDC.cpp (即USBAPI，通過arduino燒錄到MCU相關程式)
+```
+$ ls -lh /tmp/build2842119949771062043.tmp/
+abi.cpp.d              HardwareSerial1.cpp.d  HID.cpp.d              new.cpp.d              smart7688-t1.cpp.hex   WInterrupts.c.d        wiring_pulse.c.d       WString.cpp.o
+abi.cpp.o              HardwareSerial1.cpp.o  HID.cpp.o              new.cpp.o              smart7688-t1.cpp.o     WInterrupts.c.o        wiring_pulse.c.o       
+buildprefs.txt         HardwareSerial2.cpp.d  hooks.c.d              Print.cpp.d            Stream.cpp.d           wiring_analog.c.d      wiring_pulse.S.o       
+CDC.cpp.d              HardwareSerial2.cpp.o  hooks.c.o              Print.cpp.o            Stream.cpp.o           wiring_analog.c.o      wiring_shift.c.d       
+CDC.cpp.o              HardwareSerial3.cpp.d  IPAddress.cpp.d        smart7688-t1.cpp       Tone.cpp.d             wiring.c.d             wiring_shift.c.o       
+core.a                 HardwareSerial3.cpp.o  IPAddress.cpp.o        smart7688-t1.cpp.d     Tone.cpp.o             wiring.c.o             WMath.cpp.d            
+HardwareSerial0.cpp.d  HardwareSerial.cpp.d   main.cpp.d             smart7688-t1.cpp.eep   USBCore.cpp.d          wiring_digital.c.d     WMath.cpp.o            
+HardwareSerial0.cpp.o  HardwareSerial.cpp.o   main.cpp.o             smart7688-t1.cpp.elf   USBCore.cpp.o          wiring_digital.c.o     WString.cpp.d  
+```
+
+* 產生hex大小
+```
+$ ls -lh /tmp/build2842119949771062043.tmp/smart7688-t1.cpp.hex 
+-rw-r--r-- 1 root root 17K Apr 19 10:16 /tmp/build2842119949771062043.tmp/smart7688-t1.cpp.hex
+```
+
+參考：[How to get hex file from arduino files][32]
+
+
 ### 7688 Duo Pin
 
 ![Pin](http://i.imgur.com/zk9yg20.png)
@@ -265,3 +296,4 @@ part
 [29]:https://docs.labs.mediatek.com/resource/linkit-smart-7688/en/downloads
 [30]:https://mediatek-labs.gitbooks.io/linkit-smart-7688/content/duo-update-arduino-bootloader.html
 [31]:https://sites.google.com/a/fssh.khc.edu.tw/edumot/7688
+[32]:https://forum.arduino.cc/index.php?topic=131655.0
