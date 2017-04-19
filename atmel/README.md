@@ -119,7 +119,11 @@ avrdude done.  Thank you.
     * [LinkIt Smart 7688 and MCS][27]
     * [LASS - Linkit Smart 7688 Duo][28]
 
+注意：
+* 若由Arduino燒錄失敗，記得先再OpenWrt燒錄MCU的bootload，之後就會在ubuntu下產生/dev/ttyACM2等, 再使用Arduino燒一次就會成功
+* 再Arduino裡面的Serial.print()，記得開啟Serial Monitor即可查看
 
+[Linkit Smart 7688 Duo上使用PMS3003 (G3) 空汙感測器][33]
 
 ### t1-led
 
@@ -297,3 +301,4 @@ $ ls -lh /tmp/build2842119949771062043.tmp/smart7688-t1.cpp.hex
 [30]:https://mediatek-labs.gitbooks.io/linkit-smart-7688/content/duo-update-arduino-bootloader.html
 [31]:https://sites.google.com/a/fssh.khc.edu.tw/edumot/7688
 [32]:https://forum.arduino.cc/index.php?topic=131655.0
+[33]:http://lass-net.org/2016/03/implement-pms3003-g3-with-linkit-smart-7688-duo/
