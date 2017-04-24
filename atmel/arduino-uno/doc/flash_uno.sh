@@ -1,0 +1,1 @@
+avrdude -C/home/erwin/Downloads/arduino-1.6.5-r5/hardware/tools/avr/etc/avrdude.conf -q -q -patmega328p -carduino -P/dev/ttyACM0 -b115200 -D -Uflash:w:/tmp/build2003207300544409779.tmp/ArduinoISP.cpp.hex:i

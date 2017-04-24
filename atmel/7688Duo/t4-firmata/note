@@ -1,0 +1,6 @@
+https://mediatek-labs.gitbooks.io/linkit-smart-7688/content/firmata-nodejs.html
+http://icarus4.logdown.com/posts/175092-nodejs-installation-guide
+
+root@mylinkit:/tmp/testfirmata# node -v
+v0.12.7
+
