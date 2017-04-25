@@ -7,8 +7,9 @@ CLOCK      = 8000000
 #PROGRAMMER = -c usbtiny
 #PROGRAMMER = -c stk500 -P /dev/ttyUSB0
 #PROGRAMMER = -c stk500v2 -P /dev/ttyUSB0
+#arduino leonardo as isp
+#arduino uno as isp
 PROGRAMMER = -Cavrdude.conf -v  -cstk500v1 -P/dev/ttyACM0 -b19200
-#PROGRAMMER = -Cavrdude.conf -v  -cstk500v1 -P/dev/ttyACM0 -b115200
 OBJECTS    = main.o
 # for ATTiny85
 # see http://www.engbedded.com/fusecalc/
