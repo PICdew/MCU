@@ -1,0 +1,101 @@
+## Setup Unix
+
+* [setup unix](http://www.ladyada.net/learn/avr/setup-unix.html)
+
+
+apt-get install flex byacc libc6-dev libusb-1.0 libusb-1.0-0-dev
+
+
+### Binutils
+
+[binutils download} (http://www.gnu.org/software/binutils)
+
+```
+tar -jxvf binutils-2.17.tar.gz
+cd binutils-2.17
+./configure --target=avr --program-prefix="avr-" --disable-werror
+make
+make install
+```
+
+```
+root@c3247c82a48b:/opt/xx/MCU/atmel/isp-tools/USBtiny-ISP/source-code/toolchain/binutils-4.17# ls -l /usr/local/bin/avr*
+-rwxr-xr-x 1 root root 2042956 Apr 25 14:31 /usr/local/bin/avr-addr2line
+-rwxr-xr-x 2 root root 1999158 Apr 25 14:31 /usr/local/bin/avr-ar
+-rwxr-xr-x 2 root root 2826961 Apr 25 14:31 /usr/local/bin/avr-as
+-rwxr-xr-x 1 root root 2000576 Apr 25 14:31 /usr/local/bin/avr-c++filt
+-rwxr-xr-x 2 root root 2848939 Apr 25 14:31 /usr/local/bin/avr-ld
+-rwxr-xr-x 2 root root 2082994 Apr 25 14:31 /usr/local/bin/avr-nm
+-rwxr-xr-x 1 root root 2616412 Apr 25 14:31 /usr/local/bin/avr-objcopy
+-rwxr-xr-x 2 root root 2855901 Apr 25 14:31 /usr/local/bin/avr-objdump
+-rwxr-xr-x 2 root root 1999157 Apr 25 14:31 /usr/local/bin/avr-ranlib
+-rwxr-xr-x 1 root root  613019 Apr 25 14:31 /usr/local/bin/avr-readelf
+-rwxr-xr-x 1 root root 1898062 Apr 25 14:31 /usr/local/bin/avr-size
+-rwxr-xr-x 1 root root 1878144 Apr 25 14:31 /usr/local/bin/avr-strings
+-rwxr-xr-x 2 root root 2616411 Apr 25 14:31 /usr/local/bin/avr-strip
+```
+
+
+### AVR-GCC
+
+* [gcc download](http://www.gnu.org/prep/ftp.html)
+
+
+```
+tar -jxvf gcc-3.4.6.tar.bz2
+mkdir avrgcc-3.4.6
+cd avrgcc-3.4.6
+../gcc-3.4.6/configure --target=avr --enable-languages=c --disable-libssp
+make
+make install
+```
+
+```
+root@c3247c82a48b:/opt/DOCKER-erwin-ubuntu-12.04-32bit-build/workspace/github/MCU/atmel/isp-tools/USBtiny-ISP/source-code/toolchain/avrgcc-3.4.6# ls -l /usr/local/bin/avr*
+-rwxr-xr-x 1 root root 2042956 Apr 25 14:31 /usr/local/bin/avr-addr2line
+-rwxr-xr-x 2 root root 1999158 Apr 25 14:31 /usr/local/bin/avr-ar
+-rwxr-xr-x 2 root root 2826961 Apr 25 14:31 /usr/local/bin/avr-as
+-rwxr-xr-x 1 root root 2000576 Apr 25 14:31 /usr/local/bin/avr-c++filt
+-rwxr-xr-x 1 root root  218921 Apr 25 14:43 /usr/local/bin/avr-cpp
+-rwxr-xr-x 2 root root  212890 Apr 25 14:43 /usr/local/bin/avr-gcc
+-rwxr-xr-x 2 root root  212890 Apr 25 14:43 /usr/local/bin/avr-gcc-3.4.6
+-rwxr-xr-x 1 root root   15688 Apr 25 14:43 /usr/local/bin/avr-gccbug
+-rwxr-xr-x 1 root root   72333 Apr 25 14:43 /usr/local/bin/avr-gcov
+-rwxr-xr-x 2 root root 2848939 Apr 25 14:31 /usr/local/bin/avr-ld
+-rwxr-xr-x 2 root root 2082994 Apr 25 14:31 /usr/local/bin/avr-nm
+-rwxr-xr-x 1 root root 2616412 Apr 25 14:31 /usr/local/bin/avr-objcopy
+-rwxr-xr-x 2 root root 2855901 Apr 25 14:31 /usr/local/bin/avr-objdump
+-rwxr-xr-x 2 root root 1999157 Apr 25 14:31 /usr/local/bin/avr-ranlib
+-rwxr-xr-x 1 root root  613019 Apr 25 14:31 /usr/local/bin/avr-readelf
+-rwxr-xr-x 1 root root 1898062 Apr 25 14:31 /usr/local/bin/avr-size
+-rwxr-xr-x 1 root root 1878144 Apr 25 14:31 /usr/local/bin/avr-strings
+-rwxr-xr-x 2 root root 2616411 Apr 25 14:31 /usr/local/bin/avr-strip
+```
+
+* [open with O_CREAT in second argument needs 3 arguments](http://9406note.blogspot.tw/2013/08/open-with-ocreat-in-second-argument.html)
+
+
+### AVR LIB
+
+* [avr-libc](http://download.savannah.gnu.org/releases/avr-libc/old-releases)
+
+```
+tar -jxvf avr-libc-1.4.4.tar.bz2
+cd avr-libc-1.4.4
+./configure --host=avr
+make
+make install
+```
+
+
+```
+root@c3247c82a48b:/opt/DOCKER-erwin-ubuntu-12.04-32bit-build/workspace/github/MCU/atmel/isp-tools/USBtiny-ISP/source-code/toolchain/avr-libc-1.4.4# ls -l /usr/local/share/doc/avr-libc-1.4.4
+total 4
+drwxr-xr-x 6 root root 4096 Apr 25 14:49 examples
+
+root@c3247c82a48b:/opt/DOCKER-erwin-ubuntu-12.04-32bit-build/workspace/github/MCU/atmel/isp-tools/USBtiny-ISP/source-code/toolchain/avr-libc-1.4.4# ls -l /usr/local/avr
+total 12
+drwxr-xr-x 2 root root 4096 Apr 25 14:43 bin
+drwxr-xr-x 5 root root 4096 Apr 25 14:49 include
+drwxr-xr-x 6 root root 4096 Apr 25 14:49 lib
+```
