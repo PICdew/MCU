@@ -1,3 +1,7 @@
+## Arduino Tutorial
+
+* [Arduino Tutorial](http://www.ladyada.net/learn/arduino/)
+
 ## ATMEL MCU Example
 
 - [WinAVR使用指南][2]
@@ -260,6 +264,42 @@ $ ls -lh /tmp/build2842119949771062043.tmp/smart7688-t1.cpp.hex
 * [LinkIt Smart 7688 Duo 之 Arduino COM埠閃退篇][19]
 * [Linkit Smart7688 Duo Arduino Bootloader 解磚 ][20]
 * [Using AVRDUDE from OpenWrt SDK][21]
+
+-----------------------
+##  ARDUINO UNO
+
+### 確認版子的連接
+
+avrdude -Cdmeavrdude.conf -v -patmega328p -carduino -P/dev/ttyACM0 -b115200
+
+```
+$ sudo avrdude -Cavrdude.conf -v -patmega328p -carduino -P/dev/ttyACM0 -b115200                                                                                                          
+
+avrdude: Version 6.3
+         Copyright (c) 2000-2005 Brian Dean, http://www.bdmicro.com/
+         Copyright (c) 2007-2014 Joerg Wunsch
+
+         System wide configuration file is "avrdude.conf"
+         User configuration file is "/home/erwin/.avrduderc"
+         User configuration file does not exist or is not a regular file, skipping
+
+         Using Port                    : /dev/ttyACM0
+         Using Programmer              : arduino
+         Overriding Baud Rate          : 115200
+         AVR Part                      : ATmega328P
+...
+
+avrdude: Device signature = 0x1e950f (probably m328p)
+avrdude: safemode: hfuse reads as 0
+avrdude: safemode: efuse reads as 0
+
+avrdude: safemode: hfuse reads as 0
+avrdude: safemode: efuse reads as 0
+avrdude: safemode: Fuses OK (E:00, H:00, L:00)
+
+avrdude done.  Thank you.
+
+```
 
 -----------------------
  ## 其它參考
