@@ -18,17 +18,10 @@ int main (void)
     // flash# 1:
     // set PB3 high
     PORTB = 0b00001000; 
-    _delay_ms(20);
+    _delay_ms(100);
     // set PB3 low
     PORTB = 0b00000000;
-    _delay_ms(20);
+    _delay_ms(100);
 
-    // flash# 2:
-    // set PB3 high
-    PORTB = 0b00001000; 
-    //_delay_ms(200);
-    // set PB3 low
-    PORTB = 0b00000000;
-    _delay_ms(200);
     }
 }
