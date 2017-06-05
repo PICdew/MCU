@@ -31,6 +31,11 @@ avrdude -c linuxgpio -C /etc/avrdude.conf -p m32u4 -v -e -U flash:w:/root/ex0-bl
 
 ## Other
 
-*[32U4_Breakout_Board][1]
+* [32U4_Breakout_Board][1]
+* [LUFA][2]
+   LUFA (Lightweight USB Framework for AVRs, formerly known as MyUSB) is my first foray into the world of USB. 
+   It is an open-source complete USB stack for the USB-enabled Atmel AVR8 and (some of the) AVR32 microcontroller series
+
 
 [1]:https://github.com/sparkfun/32U4_Breakout_Board
+[2]:http://www.fourwalledcubicle.com/LUFA.php
